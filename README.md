@@ -1,6 +1,9 @@
-# Локальный демон Лапласа
+<div align="center">
 
-[![English version](https://img.shields.io/badge/lang-english-blue)](README_EN.md)
+# Laplace Demon
+
+### An honest predictor laboratory for finite universes — exact where knowledge is complete, candid where it is not
+
 ![Windows](https://img.shields.io/badge/platform-Windows_10%2F11-lightgrey)
 ![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)
 ![Go](https://img.shields.io/badge/go-kernel-00ADD8?logo=go&logoColor=white)
@@ -9,124 +12,172 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![GitHub stars](https://img.shields.io/github/stars/madnessbrainsbl/Laplace_Demon)
 
-**Случайность — это не свойство мира, а зазор в знании наблюдателя.** Этот
-проект доводит тезис до исполняемого кода: честный «демон Лапласа» с графическим
-интерфейсом — точный там, где знание полно, и откровенный там, где наука ставит
-стены. Ноль зависимостей: стандартная библиотека Python + собранное Go-ядро.
+[English](README.md) • [Русский](README.ru.md)
 
-![Laplace Demon](docs/screenshot.png)
+<img src="docs/screenshot.png" alt="Laplace Demon GUI" width="900"/>
 
-## Графический интерфейс
+</div>
 
-Дважды щёлкни `start_gui.cmd` или запусти:
+**Randomness is not a property of the world — it is a gap in the observer's
+knowledge.** This project turns that thesis into executable code: an honest
+Laplace's demon with a GUI — exact where knowledge is complete, candid where
+science builds walls. Zero dependencies: Python stdlib + a prebuilt Go kernel.
+
+## What's new
+
+The latest wave of changes closed Laplace's original definition end to end:
+
+- **Retrodict the past** (Classical) — exact predecessor enumeration: Gardens
+  of Eden, unique pasts, and the arrow of time as destroyed history bits.
+- **Linear shortcut** (Classical) — GF(2) fast-forward: 10^18 steps in
+  milliseconds for the eight linear rules, an honest refusal for Rule 30 —
+  computational reducibility vs irreducibility side by side.
+- **CHSH before environment** (Quantum) — a numerical Bell test: entangled
+  pairs reach the Tsirelson bound 2*sqrt(2), local determinism stops at 2.
+- **Read a qubit** (Quantum) — measurement as disturbance: extracting one bit
+  halves the purity of a Bell pair; reading a classical bit is free.
+- **Rewind** (Quantum) — the unitary world remembers: forward + reversed
+  program returns the state exactly, unless a reading broke the return.
+- **Landauer cost of knowledge** (The Walls) — the demon's memory priced in
+  joules: kT*ln2 per erased bit.
+- **Embedded demon / light cone** (Formula L) — no global "now": a demon
+  living inside the world only ever knows its cone; omniscience is a property
+  of where you sit.
+- **Macro entropy** (Formula L) — the second law for a coarse observer:
+  deterministic micro-dynamics, growing macro-uncertainty.
+- **The Game** (new tab) — outrun the demon: call Rule 30's next bit; the
+  demon computes (100%), a bounded observer hovers at the coin line (~50%).
+- Structured input everywhere: event pickers, a gate-program builder, bounded
+  spinboxes and keystroke filters — an invalid input can no longer be typed.
+- 102 unit tests, Go test/vet, and a 52-check GUI verification drive.
+
+## Graphical interface
+
+Double-click `start_gui.cmd` or run:
 
 ```powershell
 cd demon_laplas
 python gui.py
 ```
 
-## Визуализация (анимация)
+## Visualization and animation
 
-Питона хватает: всё рисуется на `tk.Canvas` без единой новой зависимости
-([viz.py](viz.py)). Каждая анимация — генератор, рисующий по кадру за вызов и
-оставляющий готовую диаграмму на экране в конце. **Анимация сама и есть график.**
+Python is sufficient: everything is drawn on `tk.Canvas` without additional
+dependencies ([viz.py](viz.py)). Each animation is a generator that draws one
+frame per call and leaves the completed diagram on the canvas. **The animation
+itself is the plot.**
 
-- **Classical / From Events** — кнопка *Animate spacetime*: мир строится по
-  строке за кадром, вырастает тот самый треугольник правила 30. Видно, почему у
-  демона нет ярлыка — структуру приходится прожить шаг за шагом.
-- **Continuous** — *Animate the system*: мяч летит и падает на землю (демон
-  назвал момент удара заранее), либо два маятника из почти одинакового старта
-  расходятся; красный — «призрак» с ошибкой 1e-6, подпись показывает момент
-  выхода за горизонт.
-- **Active Inference** — *Animate foraging*: клетки загораются золотом по мере
-  наблюдения, полоса `L_O` растёт. На правиле 60 видно плато — три хода полоса
-  стоит на нуле, потом скачок в единицу.
+- **Classical / From Events** — *Animate spacetime* builds the world one row at
+  a time and reveals the familiar Rule 30 triangle. It demonstrates why the
+  demon does not always have a shortcut: the structure may have to be evolved
+  step by step.
+- **Continuous** — *Animate the system* shows either a ball falling to the
+  ground after its impact time was predicted, or two double pendulums diverging
+  from almost identical initial states. The red trajectory is the perturbed
+  system, and the caption marks when it leaves the prediction horizon.
+- **Active Inference** — *Animate foraging* highlights observed cells while the
+  `L_O` bar rises. Rule 60 produces a plateau: three observations provide no
+  information before the coefficient jumps to one.
 
-Ничего не публикуется наружу, анимации живут только в приложении.
+Nothing is published externally. All animations remain inside the application.
 
-Событие A/E во всех вкладках задаётся конструктором (тип вопроса + номер
-клетки/кубита + значение), поэтому синтаксически неверное событие собрать
-нельзя; границы номеров следуют за шириной мира. Интерфейс полностью на
-английском языке. Восемь вкладок: **Classical** (точный классический расчёт +
-Retrodict + Linear shortcut), **From Events** (демон из событий), **Continuous**
-(RK4 и горизонт Ляпунова), **Quantum (Go)** (Go-ядро с декогеренцией, квантовая
-стена, CHSH, Read a qubit, Rewind), **Formula L** (информационная формула +
-световой конус + макроэнтропия), **Active Inference** (агент Фристона,
-покупающий знание), **The Walls** (Бекенштейн, Ландауэр, Гёдель/Вольперт) и
-**The Game** (обгони демона).
+Events A/E are created with structured controls on every tab: question type,
+cell or qubit index, and value. This makes syntactically invalid events
+impossible to assemble, while index limits track the current world size.
 
-## Active Inference (принцип свободной энергии)
+The interface is entirely in English and contains eight tabs:
 
-Вкладка **Active Inference** — демон не дан готовым, а *становится* демоном,
-покупая знание. Ожидаемая свободная энергия агента без предпочтений сводится к
-чистому любопытству: наблюдай клетку, снимающую больше всего неопределённости.
-`L_O` растёт с каждым эпистемическим действием ([fep.py](fep.py)).
+- **Classical** — exact deterministic calculation, plus Retrodict and the
+  linear shortcut;
+- **From Events** — inferring a law from observations;
+- **Continuous** — RK4 integration and the Lyapunov horizon;
+- **Quantum (Go)** — a native density-matrix kernel with environmental noise,
+  the wavefunction limit, CHSH, Read a qubit, and Rewind;
+- **Formula L** — the information-theoretic Laplace coefficient, the embedded
+  light-cone demon, and macro entropy;
+- **Active Inference** — an epistemic agent that acquires knowledge;
+- **The Walls** — Bekenstein, Landauer, Gödel/Wolpert, and related limits;
+- **The Game** — outrun the demon by calling Rule 30's next bit.
+
+## Active inference and the free-energy principle
+
+On the **Active Inference** tab, the demon is not supplied fully formed. It
+*becomes* a local demon by acquiring observations. With no preferred outcome,
+the agent selects the cell that removes the most uncertainty. `L_O` increases
+with each epistemic action ([fep.py](fep.py)).
 
 ```powershell
 python fep.py --width 7 --rule 30 --steps 1 --event cell3=1
 python fep.py --width 7 --rule 60 --steps 1 --event cell3=1
 ```
 
-Правило 60 — самый интересный случай. Закон там XOR-подобный, и жадное
-любопытство **буксует**: три наблюдения подряд приносят ровно ноль информации,
-агент платит 4 клетки там, где оптимум берёт 2. Эпистемическая ценность не
-субмодулярна — градиентное любопытство переплачивает. Программа это обнаруживает
-и честно сообщает (`EPISTEMIC PLATEAU`, `Greedy is NOT optimal`).
+Rule 60 is the most instructive example. Its XOR-like law makes greedy
+curiosity **stall**: three successive observations provide exactly zero
+information, so the agent pays for four cells while the exhaustive optimum
+needs only two. Epistemic value is not submodular in this case, and the program
+reports this honestly with `EPISTEMIC PLATEAU` and `Greedy is NOT optimal`.
 
-## Квантовая стена
+## The quantum wall
 
-Кнопка **Wavefunction limit (before environment)** на вкладке Quantum
-([walls.py](walls.py)) считает `L_O` для квантового события, когда знание K =
-*полная волновая функция* в рамках операциональной квантовой модели. Параметры
-среды для этого отдельного отчёта не применяются:
+The **Wavefunction limit (before environment)** button on the Quantum tab
+([walls.py](walls.py)) calculates `L_O` for a quantum event when K is the
+*complete wavefunction* available to this operational model. Environmental
+parameters are intentionally not applied to this separate report:
 
 ```text
-H(E) = 1.000000 бит
-H(E | full state) = 1.000000 бит
-I(E;K) = 0.000000 бит
+H(E) = 1.000000 bits
+H(E | full state) = 1.000000 bits
+I(E;K) = 0.000000 bits
 L_O = 0.000000
 ```
 
-При фиксированной волновой функции энтропия отдельного результата измерения не
-падает. Это операциональный вывод данной модели, а не доказательство против всех
-интерпретаций: детерминистские интерпретации добавляют переменные, которых эта
-программа не хранит и не умеет делать доступными наблюдателю.
+For a fixed wavefunction, knowing the wavefunction does not remove the entropy
+of one measurement result. This is an operational conclusion of this model,
+not a proof against every interpretation of quantum mechanics. Deterministic
+interpretations add variables that this program neither stores nor makes
+available to the observer.
 
-Там же — комплементарность (Гейзенберг в битах): `H(Z) + H(X) >= 1`
-(Maassen–Uffink). Определить одну наблюдаемую можно только ценой полного незнания
-другой.
+The same report shows entropic complementarity, or Heisenberg uncertainty in
+bits: `H(Z) + H(X) >= 1` (Maassen–Uffink). Determining one observable comes at
+the cost of uncertainty about the complementary observable.
 
-## Непрерывный демон
+## Continuous demon
 
-Вкладка **Continuous** моделирует мяч с сопротивлением воздуха и двойной
-маятник методом RK4. Оба бага из
-аудита chat_5.6_sol.md исправлены: интегрирование мяча останавливается в момент
-удара о землю (t=3.306 с), а показатель Ляпунова измеряется методом Бенеттина,
-и горизонт `T_pred = (1/λ)·ln(δ_доп/δ₀)` считается из измеренного значения
-(для маятника λ≈1.6, а не постулированные 5 — поэтому t=5 с при δ₀=1e-6 ещё
-ВНУТРИ горизонта, как и указал аудит).
+The **Continuous** tab models a ball with linear air resistance and a chaotic
+double pendulum using RK4. Ball integration stops at ground impact
+(`t ≈ 3.306 s`). The largest Lyapunov exponent is measured with Benettin
+renormalization rather than assumed, and the prediction horizon is calculated
+from that measured value:
+
+```text
+T_pred = (1 / λ) * ln(δ_tolerance / δ_0)
+```
+
+For the supplied pendulum, `λ ≈ 1.6 1/s`; therefore `t = 5 s` with
+`δ_0 = 1e-6` is still inside the measured horizon.
 
 ```powershell
 python mechanics.py --system pendulum --horizon 5 --error 1e-6 --tolerance 1.0
 ```
 
-## Запреты
+## Physical and logical walls
 
-Вкладка **The Walls** демонстрирует стены, которые раньше соблюдались только
-по построению:
+The **The Walls** tab demonstrates limits that were previously enforced only by
+construction:
 
-- **Ёмкость знания (Бекенштейн).** `H_irr(m) = min H(E|K)` по всем наборам K из
-  m клеток — формула аудита `inf по классу доступных знаний`. Профиль показывает,
-  сколько бит минимально нужно демону, чтобы событие стало определённым. Вторая
-  кнопка считает физический предел `I <= 2πRE/(ħc·ln2)` для носителя заданных
-  радиуса и энергии. Честная оговорка в самом отчёте: для игрушечных миров предел
-  астрономически слаб и сам по себе НЕ доказывает, что предсказатель обязан быть
-  больше системы (пункт 5 аудита).
-- **Диагональ X* (Гёдель/Вольперт).** Мир, который читает публикацию демона и
-  делает наоборот: перебираются ВСЕ возможные стратегии — внутри мира каждая
-  ошибается всегда, снаружи полный демон существует.
-- **Две машины друг о друге.** Перебор всех совместных исходов: ни одна пара не
-  может сильно инферить друг друга — конечная иллюстрация результата Вольперта
+- **Knowledge capacity (Bekenstein).** `H_irr(m) = min H(E|K)` is calculated
+  over every knowledge set K containing m cells. The profile reports how many
+  state bits are minimally required to determine the event. A separate button
+  evaluates the physical bound `I <= 2πRE/(ħc·ln2)` for a carrier with the
+  specified radius and energy. For toy worlds this bound is astronomically
+  loose and does not by itself prove that a predictor must be larger than its
+  system.
+- **Diagonal X* (Gödel/Wolpert).** The world reads the demon's published
+  prediction and does the opposite. Every possible one-bit strategy fails when
+  the predictor is inside the world, while an external predictor succeeds.
+- **Two devices inferring one another.** Exhaustive enumeration of all joint
+  outputs gives a finite illustration of Wolpert's result: two distinguishable
+  devices cannot both strongly infer each other
   ([arXiv:0708.1362](https://arxiv.org/abs/0708.1362)).
 
 ```powershell
@@ -135,91 +186,102 @@ python walls.py --radius 0.1 --energy 1.0 --required-bits 3
 python godel.py
 ```
 
-## Прошлое, ярлык, Белл и цена знания
+## The past, shortcuts, Bell, and the physical price of knowledge
 
-Четыре демонстрации, закрывающие определение Лапласа целиком:
+Four demonstrations complete the local interpretation of Laplace's idea:
 
-- **Retrodict the past** (Classical) — Лаплас обещал демону и прошлое. Кнопка
-  перебирает все прообразы состояния: вперёд закон даёт один мир, назад — 0
-  (сад Эдема), 1 (обратимо здесь) или много (стрела времени: биты истории
-  уничтожены, и полное знание настоящего не говорит, какое прошлое было).
-- **Linear shortcut** (Classical) — сводимость против несводимости. Восемь
-  правил из 256 линейны над GF(2): для них демон прыгает через 10^18 шагов за
-  миллисекунды (возведение полинома шага в степень, O(log t)). Для правила 30
-  ярлыка не знает никто — программа честно отказывает. Контраст этих двух
-  ответов и есть стена Вольфрама. CLI: `python shortcut.py --rule 90 --steps
-  1000000000000000000`.
-- **CHSH: Bell test** (Quantum) — тест Белла числом: локально-детерминированный
-  предел S <= 2, белловская пара даёт точные 2*sqrt(2) = 2.828427 (граница
-  Цирельсона). Никакой классический демон с заранее записанными ответами не
-  воспроизведёт эти корреляции.
-- **Landauer cost of knowledge** (The Walls) — цена знания в джоулях: стирание
-  бита стоит kT*ln2 (ответ Беннетта демону Максвелла, подтверждён экспериментом
-  в 2012). Минимальный демон из H_irr умножается на температуру носителя —
-  «знание физично» становится числом.
+- **Retrodict the past** (Classical) — Laplace's intelligence was expected to
+  know the past as well as the future. The program enumerates every predecessor
+  of the current state. Forward evolution produces one future, while backward
+  evolution may produce zero predecessors (a Garden of Eden), one predecessor,
+  or many. Multiple predecessors expose an arrow of time: information about
+  history was destroyed, so complete knowledge of the present is insufficient
+  to reconstruct one unique past.
+- **Linear shortcut** (Classical) — reducibility versus irreducibility. Eight of
+  the 256 elementary rules are linear over GF(2). For those rules, polynomial
+  exponentiation jumps across `10^18` steps in milliseconds with `O(log t)`
+  work. No shortcut is known for Rule 30, and the program refuses honestly.
+  This contrast illustrates the computational-irreducibility wall.
 
-## Демон внутри мира, измерение и второй закон
+  ```powershell
+  python shortcut.py --rule 90 --steps 1000000000000000000
+  ```
 
-Три демонстрации, замыкающие ЗАПРЕТЫ.md кодом:
+- **CHSH before environment** (Quantum) — the program calculates the maximum
+  CHSH value `S_max` for the selected qubit pair in the unitary state. Every
+  Bell state reaches the Tsirelson bound `2*sqrt(2) = 2.828427`; local
+  deterministic correlations satisfy `S <= 2`. Dephasing and damping are not
+  applied in this report, which is stated explicitly in its output.
+- **Landauer cost of knowledge** (The Walls) — erasing one bit costs at least
+  `kT*ln2` joules. The minimal knowledge from `H_irr` is multiplied by the
+  carrier temperature, turning “information is physical” into a numerical
+  lower bound.
 
-- **Embedded demon (light cone)** (Formula L, [cone.py](cone.py)) — «нет
-  глобального сейчас»: сигналы идут 1 клетку/шаг, и демон, живущий в клетке p,
-  за T шагов узнаёт только конус радиуса T. Отчёт показывает L_O для каждого
-  места в мире: быть всезнающим — свойство того, ГДЕ ты сидишь. Внешний демон
-  других вкладок получает весь срез настоящего как дар, недоступный ни одному
-  обитателю.
-- **Read a qubit** (Quantum) — «измерение возмущает»: чтение кубита = полная
-  дефазировка. Чистота белловской пары падает 1.0 → 0.5 самим актом извлечения
-  бита; знание не только стоит джоулей — оно оставляет следы. Для классического
-  бита чтение бесплатно, и отчёт честно это говорит.
+## The demon inside the world, measurement, and the second law
+
+Three demonstrations that turn the remaining prohibitions into running code:
+
+- **Embedded demon (light cone)** (Formula L, [cone.py](cone.py)) — there is no
+  global "now": signals travel one cell per step, so a demon living at cell p
+  and predicting T steps ahead has heard from at most a radius-T cone. The
+  report shows `L_O` for every seat in the world — omniscience turns out to be
+  a property of WHERE you sit, not how clever you are. The external demon of
+  the other tabs receives the whole present as a gift no inhabitant gets.
+- **Read a qubit** (Quantum) — measurement disturbs: reading a qubit equals
+  full dephasing. The purity of a Bell pair drops from 1.0 to 0.5 through the
+  act of extracting one bit; knowledge not only costs joules — it leaves
+  fingerprints. Reading a classical bit is free, and the report says so.
 - **Macro entropy (second law)** (Formula L, [macro.py](macro.py)) —
-  термодинамика как незнание по построению: наблюдатель видит только суммы
-  блоков, микромир детерминирован, а H(macro) растёт с 0 до ~5 бит без единого
-  случайного события. Правило 204 (тождество) макронезнания не создаёт — не
-  каждый закон делает термодинамический мир.
+  thermodynamics as designed ignorance: the observer sees only block sums, the
+  micro-world is strictly deterministic, yet H(macro) grows from 0 to ~5 bits
+  without a single random event. Rule 204 (identity) creates no macro
+  ignorance — not every law makes a thermodynamic world.
 
 ```powershell
 python cone.py --width 7 --rule 30 --horizon 1 --event cell3=1
 python macro.py --width 12 --rule 30 --steps 8
 ```
 
-## Rewind и игра
+## Rewind and The Game
 
-- **Rewind** (Quantum) — унитарный мир помнит: программа гейтов, прогнанная
-  вперёд и задом наперёд (H, X, CNOT самообратны), возвращает состояние точно,
-  P(return)=1. Одно чтение кубита посередине ломает возврат (для белловской
-  пары — до 0.5): стрела времени входит в квантовую механику через измерение и
-  среду, но никогда — через сам закон.
-- **The Game** (восьмая вкладка) — обгони демона: скрытый мир крутит правило 30,
-  ты называешь следующий бит центральной колонки. Демон не угадывает — он
-  вычисляет (всегда 100%); человек застревает у линии монетки ~50%. Та самая
-  «случайность = зазор знания», пережитая лично: каждый бит был определён до
-  твоей догадки.
+- **Rewind** (Quantum) — the unitary world remembers: a gate program run
+  forward and then in reverse (H, X and CNOT are self-inverse) returns the
+  state exactly, P(return) = 1. One reading of a qubit midway breaks the
+  return (down to 0.5 for a Bell pair): the arrow of time enters quantum
+  mechanics through measurement and environment, never through the law itself.
+- **The Game** (eighth tab) — outrun the demon: a hidden 31-cell world runs
+  Rule 30 and you call the next bit of the center column. The demon never
+  guesses — it computes (always 100%); a bounded observer hovers at the coin
+  line (~50%). "Randomness is a knowledge gap," experienced first-hand: every
+  bit was determined before you guessed it.
 
-## Демон из событий
+## Demon from events
 
-Вкладка **From Events** — демон, которому закон *не задан*. Он получает
-только историю наблюдённых состояний (через `;`), выводит из переходов известные
-строки локального закона, перебирает все правила, совместимые с событиями, и
-предсказывает:
+On the **From Events** tab, the law is not given. The demon receives only a
+semicolon-separated history of observed states, reconstructs known rows of the
+local rule table, enumerates every rule consistent with the observations, and
+then predicts:
 
-- если все совместимые законы дают один исход — событие ОПРЕДЕЛЕНО;
-- если законы расходятся — демон честно сообщает P(A) при равновозможных законах;
-- если история противоречит любому детерминированному локальному закону —
-  сообщается ошибка (наблюдения несовместимы с детерминизмом).
+- if all consistent laws agree, the event is **DETERMINED**;
+- if the laws disagree, the program reports `P(A)` under an explicit uniform
+  prior over the remaining rules;
+- if the observations contradict every deterministic local rule, the program
+  reports an error.
 
-CLI-вариант:
+Command-line example:
 
 ```powershell
 python events.py --history "0001000; 0011100; 0110010" --steps 20 --event cell3=1
 ```
 
-Чем длиннее история, тем меньше совместимых правил: одно состояние допускает все
-256 законов, богатая история сужает их до единственного. Это демон Лапласа в
-исходном смысле: знание закона добывается из событий, а не постулируется.
+A single state permits all 256 rules. A richer history narrows the set and may
+identify one law uniquely. This captures the original Laplacean idea that the
+law can be learned from events rather than simply postulated.
 
-Вкладка **Formula L** перебирает все возможные начальные состояния конечного
-мира и считает:
+## Formula L
+
+The **Formula L** tab enumerates every possible initial state of a finite world
+and calculates:
 
 ```text
 R = H(E|K)
@@ -227,56 +289,63 @@ I(E;K) = H(E) - H(E|K)
 L = I(E;K) / H(E)
 ```
 
-`K` задаётся индексами известных клеток (`0,3,5`), `all` или `none`.
-При `H(E)=0` программа явно применяет соглашение `L=1` для тривиально
-неизменного события.
+`K` is specified with known cell indexes such as `0,3,5`, or with `all` and
+`none`. When `H(E)=0`, the program explicitly uses the convention `L=1` for an
+event that is already fixed.
 
-CLI-вариант:
+Command-line example:
 
 ```powershell
 python information.py --width 7 --known 2,3,4 --rule 30 --steps 1 --event cell3=1
 ```
 
-Программа точно предсказывает конечную детерминированную «вселенную» — кольцо
-битовых клеток с известным правилом эволюции:
+## Exact classical world
+
+The core program exactly predicts a finite deterministic universe: a periodic
+ring of binary cells evolving under a known elementary cellular-automaton rule.
 
 ```text
 x(t + n) = F_rule^n(x(t))
 ```
 
-Это настоящий демон только внутри модели: состояние конечно, закон полностью
-известен, вычисления целочисленные, внешнего шума нет. Физическую Вселенную
-программа не предсказывает.
+It is a genuine demon only inside this model: the state is finite, the law is
+known, computation is discrete, and no external noise exists. It does not
+predict the physical Universe.
 
-`experiment.py` повторяет содержательную идею научного проекта
-[LaplaceDemonSims](https://github.com/zgompert/LaplaceDemonSims): запускает много
-возможных траекторий и измеряет, как ошибки данных, незнание закона и внутренний
-шум снижают предсказуемость.
+`experiment.py` follows the substantive idea of
+[LaplaceDemonSims](https://github.com/zgompert/LaplaceDemonSims): it runs many
+possible trajectories and measures how data errors, law uncertainty, and
+intrinsic noise reduce predictability.
 
-## Запуск
+## Command-line usage
 
 ```powershell
 python demon.py --state 0001000 --rule 30 --steps 20
 python demon.py --state 0001000 --rule 30 --steps 20 --cell 3
 ```
 
-## Интерактивный режим
+The classical CLI writes JSON. `exact_within_model: true` means exact only for
+the supplied initial state and rule. If a state repeats, later evolution is
+cyclic; the predictor detects that cycle and can answer very distant horizons
+without replaying every step.
+
+## Interactive terminal mode
 
 ```powershell
 python interactive.py
 ```
 
-В режиме `classical` вводятся начальное состояние, правило, горизонт и событие:
+Classical mode accepts an initial state, rule, horizon, and event:
 
 ```text
 cell3=1
 state=0011100
 ```
 
-Для полностью заданной классической модели ответ всегда равен `P(A)=100%` или
+For a fully specified classical model, the answer is always `P(A)=100%` or
 `P(A)=0%`.
 
-В режиме `quantum` вводятся базисное состояние, гейты и событие. Поддерживаются:
+Quantum mode accepts a basis state, gate program, and event:
 
 ```text
 H 0; X 1; CNOT 0 1
@@ -285,27 +354,27 @@ q0=q1
 state=11
 ```
 
-Пример по умолчанию создаёт запутанное состояние Белла. Событие `q0=q1`
-определено на 100%, но отдельный исход `q0=0` имеет вероятность 50%. Программа не
-подменяет такой исход детерминированным ответом.
+The default program creates an entangled Bell state. The event `q0=q1` is
+certain, while one local result such as `q0=0` has probability 50%. The program
+does not replace that distribution with a fabricated deterministic answer.
 
-## Нативное квантовое ядро на Go
+## Native Go quantum kernel
 
-На машине установлен Go 1.24, поэтому расчёт матрицы плотности и взаимодействия
-со средой вынесен в нативную программу без сторонних зависимостей:
+The density-matrix calculation and environmental channels are implemented in a
+native Go 1.24 program without third-party dependencies:
 
 ```powershell
 cd native_quantum
 go run .
 ```
 
-Поддерживаются `H`, `X`, `CNOT`, матрица плотности, фазовая декогеренция,
-амплитудное затухание и события `qN=0/1`, `qN=qM`, `state=bits`.
-Размер ограничен 10 кубитами: матрица плотности требует `4^n` комплексных чисел.
-Параметры среды применяются к одному выбранному кубиту: `0` отключает канал,
-`1` задаёт полную декогеренцию или полное амплитудное затухание.
+The kernel supports `H`, `X`, `CNOT`, density matrices, phase damping,
+amplitude damping, and the events `qN=0/1`, `qN=qM`, and `state=bits`. The limit
+is 10 qubits because a density matrix stores `4^n` complex numbers.
+Environmental parameters apply to one selected qubit: `0` disables a channel,
+while `1` requests complete phase damping or amplitude damping.
 
-Проверка и сборка:
+Test and build:
 
 ```powershell
 go test ./...
@@ -313,47 +382,49 @@ go build -buildvcs=false -o quantum-demon.exe .
 .\quantum-demon.exe
 ```
 
-Go ускоряет численное ядро относительно чистого Python, но не превращает
-вероятностный квантовый исход в детерминированный и не моделирует полную QFT.
+Go accelerates the numerical kernel relative to pure Python, but it cannot turn
+a probabilistic measurement outcome into a deterministic one and does not model
+full quantum field theory.
 
-Классический CLI `demon.py` выводит JSON. `exact_within_model: true` означает
-точность только при заданных начальном состоянии и правиле.
-
-Если состояние повторяется, дальнейшая эволюция циклична. Программа обнаруживает
-цикл и сразу вычисляет состояние даже на далёком горизонте.
-
-## Эксперимент как в LaplaceDemonSims
+## Predictability experiment
 
 ```powershell
 python experiment.py
 ```
 
-Программа сравнивает шесть условий:
+The experiment compares six conditions:
 
-- `perfect` — состояние и закон известны точно;
-- `measurement_error` — ошибки начального состояния;
-- `model_error` — ошибки в таблице закона;
-- `intrinsic_noise` — случайные изменения во время эволюции;
-- `combined` — все источники вместе;
-- `improved_data` — ошибки данных и модели уменьшены в пять раз.
+- `perfect` — exact initial state and law;
+- `measurement_error` — errors in the measured initial state;
+- `model_error` — errors in the rule table;
+- `intrinsic_noise` — random changes during evolution;
+- `combined` — all error sources together;
+- `improved_data` — data and model errors reduced by a factor of five.
 
-В консоли появится итоговая предсказуемость и горизонт, на котором она стала
-ниже `0.95`. Полные результаты сохраняются в `results.csv` и открываются в Excel.
-По умолчанию считаются 10 шагов: у хаотического правила 30 более длинный горизонт
-быстро перемешивает все сценарии и скрывает пользу улучшенных данных.
+The terminal shows final predictability and the first horizon where it falls
+below `0.95`. Full measurements are written to `results.csv`. The default run
+uses ten steps; at much longer horizons, chaotic Rule 30 mixes trajectories so
+strongly that it can hide the benefit of improved input data.
 
-Настройки:
+Custom settings:
 
 ```powershell
 python experiment.py --state 0001000 --rule 30 --steps 100 --runs 500 --seed 42 --output results.csv
 ```
 
-`predictability = 1` означает, что все возможные траектории совпадают по каждой
-клетке. Значение уменьшается по мере расхождения траекторий. `exact_match_rate`
-показывает долю прогонов, полностью совпавших с эталонной траекторией.
+`predictability = 1` means that every possible trajectory agrees in every cell.
+The value decreases as trajectories diverge. `exact_match_rate` is the fraction
+of runs whose complete state matches the noise-free reference trajectory.
 
-## Проверка
+## Verification
 
 ```powershell
 python -m unittest -v
+```
+
+The current project also includes Go tests for the native quantum kernel:
+
+```powershell
+Set-Location -LiteralPath '.\native_quantum'
+go test ./...
 ```
