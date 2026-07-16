@@ -1,13 +1,49 @@
 # Local Laplace Demon
 
-Russian version: [README.md](README.md)
+[Русский](README.md) | **English**
+
+**Randomness is not a property of the world — it is a gap in the observer's
+knowledge.** This project turns that thesis into executable code: an honest
+Laplace's demon with a GUI — exact where knowledge is complete, candid where
+science builds walls. Zero dependencies: Python stdlib + a prebuilt Go kernel.
+License: [MIT](LICENSE).
+
+![Laplace Demon](docs/screenshot.png)
+
+## What's new
+
+The latest wave of changes closed Laplace's original definition end to end:
+
+- **Retrodict the past** (Classical) — exact predecessor enumeration: Gardens
+  of Eden, unique pasts, and the arrow of time as destroyed history bits.
+- **Linear shortcut** (Classical) — GF(2) fast-forward: 10^18 steps in
+  milliseconds for the eight linear rules, an honest refusal for Rule 30 —
+  computational reducibility vs irreducibility side by side.
+- **CHSH before environment** (Quantum) — a numerical Bell test: entangled
+  pairs reach the Tsirelson bound 2*sqrt(2), local determinism stops at 2.
+- **Read a qubit** (Quantum) — measurement as disturbance: extracting one bit
+  halves the purity of a Bell pair; reading a classical bit is free.
+- **Rewind** (Quantum) — the unitary world remembers: forward + reversed
+  program returns the state exactly, unless a reading broke the return.
+- **Landauer cost of knowledge** (The Walls) — the demon's memory priced in
+  joules: kT*ln2 per erased bit.
+- **Embedded demon / light cone** (Formula L) — no global "now": a demon
+  living inside the world only ever knows its cone; omniscience is a property
+  of where you sit.
+- **Macro entropy** (Formula L) — the second law for a coarse observer:
+  deterministic micro-dynamics, growing macro-uncertainty.
+- **The Game** (new tab) — outrun the demon: call Rule 30's next bit; the
+  demon computes (100%), a bounded observer hovers at the coin line (~50%).
+- Structured input everywhere: event pickers, a gate-program builder, bounded
+  spinboxes and keystroke filters — an invalid input can no longer be typed.
+- 102 unit tests, Go test/vet, and a 52-check GUI verification drive.
 
 ## Graphical interface
 
 Double-click `start_gui.cmd` or run:
 
 ```powershell
-Set-Location -LiteralPath 'D:\NewOld\программ\theory_all\demon_laplas'
+cd demon_laplas
 python gui.py
 ```
 
@@ -36,15 +72,19 @@ Events A/E are created with structured controls on every tab: question type,
 cell or qubit index, and value. This makes syntactically invalid events
 impossible to assemble, while index limits track the current world size.
 
-The interface is entirely in English and contains seven tabs:
+The interface is entirely in English and contains eight tabs:
 
-- **Classical** — exact deterministic calculation;
+- **Classical** — exact deterministic calculation, plus Retrodict and the
+  linear shortcut;
 - **From Events** — inferring a law from observations;
 - **Continuous** — RK4 integration and the Lyapunov horizon;
-- **Quantum (Go)** — a native density-matrix kernel with environmental noise;
-- **Formula L** — the information-theoretic Laplace coefficient;
+- **Quantum (Go)** — a native density-matrix kernel with environmental noise,
+  the wavefunction limit, CHSH, Read a qubit, and Rewind;
+- **Formula L** — the information-theoretic Laplace coefficient, the embedded
+  light-cone demon, and macro entropy;
 - **Active Inference** — an epistemic agent that acquires knowledge;
-- **The Walls** — Bekenstein, Landauer, Gödel/Wolpert, and related limits.
+- **The Walls** — Bekenstein, Landauer, Gödel/Wolpert, and related limits;
+- **The Game** — outrun the demon by calling Rule 30's next bit.
 
 ## Active inference and the free-energy principle
 
@@ -164,6 +204,44 @@ Four demonstrations complete the local interpretation of Laplace's idea:
   carrier temperature, turning “information is physical” into a numerical
   lower bound.
 
+## The demon inside the world, measurement, and the second law
+
+Three demonstrations that turn the remaining prohibitions into running code:
+
+- **Embedded demon (light cone)** (Formula L, [cone.py](cone.py)) — there is no
+  global "now": signals travel one cell per step, so a demon living at cell p
+  and predicting T steps ahead has heard from at most a radius-T cone. The
+  report shows `L_O` for every seat in the world — omniscience turns out to be
+  a property of WHERE you sit, not how clever you are. The external demon of
+  the other tabs receives the whole present as a gift no inhabitant gets.
+- **Read a qubit** (Quantum) — measurement disturbs: reading a qubit equals
+  full dephasing. The purity of a Bell pair drops from 1.0 to 0.5 through the
+  act of extracting one bit; knowledge not only costs joules — it leaves
+  fingerprints. Reading a classical bit is free, and the report says so.
+- **Macro entropy (second law)** (Formula L, [macro.py](macro.py)) —
+  thermodynamics as designed ignorance: the observer sees only block sums, the
+  micro-world is strictly deterministic, yet H(macro) grows from 0 to ~5 bits
+  without a single random event. Rule 204 (identity) creates no macro
+  ignorance — not every law makes a thermodynamic world.
+
+```powershell
+python cone.py --width 7 --rule 30 --horizon 1 --event cell3=1
+python macro.py --width 12 --rule 30 --steps 8
+```
+
+## Rewind and The Game
+
+- **Rewind** (Quantum) — the unitary world remembers: a gate program run
+  forward and then in reverse (H, X and CNOT are self-inverse) returns the
+  state exactly, P(return) = 1. One reading of a qubit midway breaks the
+  return (down to 0.5 for a Bell pair): the arrow of time enters quantum
+  mechanics through measurement and environment, never through the law itself.
+- **The Game** (eighth tab) — outrun the demon: a hidden 31-cell world runs
+  Rule 30 and you call the next bit of the center column. The demon never
+  guesses — it computes (always 100%); a bounded observer hovers at the coin
+  line (~50%). "Randomness is a knowledge gap," experienced first-hand: every
+  bit was determined before you guessed it.
+
 ## Demon from events
 
 On the **From Events** tab, the law is not given. The demon receives only a
@@ -229,7 +307,6 @@ intrinsic noise reduce predictability.
 ## Command-line usage
 
 ```powershell
-cd D:\NewOld\программ\theory_all\demon_laplas
 python demon.py --state 0001000 --rule 30 --steps 20
 python demon.py --state 0001000 --rule 30 --steps 20 --cell 3
 ```
@@ -274,7 +351,7 @@ The density-matrix calculation and environmental channels are implemented in a
 native Go 1.24 program without third-party dependencies:
 
 ```powershell
-Set-Location -LiteralPath 'D:\NewOld\программ\theory_all\demon_laplas\native_quantum'
+cd native_quantum
 go run .
 ```
 
