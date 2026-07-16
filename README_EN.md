@@ -1,12 +1,18 @@
 # Local Laplace Demon
 
-[Русский](README.md) | **English**
+[![Russian version](https://img.shields.io/badge/lang-russian-blue)](README.md)
+![Windows](https://img.shields.io/badge/platform-Windows_10%2F11-lightgrey)
+![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)
+![Go](https://img.shields.io/badge/go-kernel-00ADD8?logo=go&logoColor=white)
+![Dependencies](https://img.shields.io/badge/dependencies-none-success)
+![Tests](https://img.shields.io/badge/tests-102_passing-success)
+![License](https://img.shields.io/badge/license-MIT-blue)
+![GitHub stars](https://img.shields.io/github/stars/madnessbrainsbl/Laplace_Demon)
 
 **Randomness is not a property of the world — it is a gap in the observer's
 knowledge.** This project turns that thesis into executable code: an honest
 Laplace's demon with a GUI — exact where knowledge is complete, candid where
 science builds walls. Zero dependencies: Python stdlib + a prebuilt Go kernel.
-License: [MIT](LICENSE).
 
 ![Laplace Demon](docs/screenshot.png)
 
