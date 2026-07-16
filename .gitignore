@@ -15,3 +15,8 @@ gui_verify*.png
 
 # Agent tooling stays local
 .claude/
+
+# PyInstaller build artifacts
+build/
+dist/
+*.spec
