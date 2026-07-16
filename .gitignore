@@ -12,3 +12,6 @@ gui_verify*.png
 
 # Local editor/agent state
 .claude/settings.local.json
+
+# Agent tooling stays local
+.claude/
