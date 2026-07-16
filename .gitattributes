@@ -1,0 +1,7 @@
+* text=auto
+*.py text
+*.go text
+*.md text
+*.cmd text eol=crlf
+*.exe binary
+*.png binary

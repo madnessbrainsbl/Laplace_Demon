@@ -1,0 +1,14 @@
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Runtime artifacts
+errors.log
+results.csv
+
+# Generated reports and screenshots
+outputs/
+gui_verify*.png
+
+# Local editor/agent state
+.claude/settings.local.json
