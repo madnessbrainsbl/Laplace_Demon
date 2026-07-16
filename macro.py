@@ -35,7 +35,10 @@ def macro_state(state: str) -> tuple[int, ...]:
 def dilute_ensemble(width: int) -> list[str]:
     """Every micro-world compatible with 'one particle in each block'."""
     if width % BLOCK or width <= 0:
-        raise ValueError(f"width must be a positive multiple of {BLOCK}")
+        raise ValueError(
+            f"width must be a positive multiple of {BLOCK} — the coarse"
+            f" observer reads blocks of {BLOCK} cells (try 6, 9 or 12)"
+        )
     blocks = width // BLOCK
     if len(BLOCK_MICROS) ** blocks > MAX_ENSEMBLE:
         raise ValueError("width exceeds the macro-ensemble limit")
