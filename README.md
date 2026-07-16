@@ -1,12 +1,18 @@
 # Локальный демон Лапласа
 
-**Русский** | [English](README_EN.md)
+[![English version](https://img.shields.io/badge/lang-english-blue)](README_EN.md)
+![Windows](https://img.shields.io/badge/platform-Windows_10%2F11-lightgrey)
+![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)
+![Go](https://img.shields.io/badge/go-kernel-00ADD8?logo=go&logoColor=white)
+![Dependencies](https://img.shields.io/badge/dependencies-none-success)
+![Tests](https://img.shields.io/badge/tests-102_passing-success)
+![License](https://img.shields.io/badge/license-MIT-blue)
+![GitHub stars](https://img.shields.io/github/stars/madnessbrainsbl/Laplace_Demon)
 
 **Случайность — это не свойство мира, а зазор в знании наблюдателя.** Этот
 проект доводит тезис до исполняемого кода: честный «демон Лапласа» с графическим
 интерфейсом — точный там, где знание полно, и откровенный там, где наука ставит
 стены. Ноль зависимостей: стандартная библиотека Python + собранное Go-ядро.
-Лицензия: [MIT](LICENSE).
 
 ![Laplace Demon](docs/screenshot.png)
 
