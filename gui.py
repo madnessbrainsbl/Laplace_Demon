@@ -5,6 +5,7 @@ from __future__ import annotations
 import random
 import re
 import subprocess
+import sys
 import tkinter as tk
 from collections.abc import Callable
 from datetime import datetime
@@ -39,9 +40,15 @@ from walls import (
     quantum_wall_report,
 )
 
-APP_DIR = Path(__file__).resolve().parent
+if getattr(sys, "frozen", False):
+    # PyInstaller one-file build: bundled resources are unpacked to _MEIPASS,
+    # while the log belongs next to the downloaded executable.
+    BUNDLE_DIR = Path(getattr(sys, "_MEIPASS", "."))
+    APP_DIR = Path(sys.executable).resolve().parent
+else:
+    BUNDLE_DIR = APP_DIR = Path(__file__).resolve().parent
 LOG_FILE = APP_DIR / "errors.log"
-QUANTUM_EXE = APP_DIR / "native_quantum" / "quantum-demon.exe"
+QUANTUM_EXE = BUNDLE_DIR / "native_quantum" / "quantum-demon.exe"
 QUANTUM_TIMEOUT_SECONDS = 30
 QUANTUM_MARKER = "Basis state probabilities:"
 MECHANICS_SYSTEMS = {
