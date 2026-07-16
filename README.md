@@ -1,20 +1,21 @@
 # Локальный демон Лапласа
 
+**Русский** | [English](README_EN.md)
+
 **Случайность — это не свойство мира, а зазор в знании наблюдателя.** Этот
 проект доводит тезис до исполняемого кода: честный «демон Лапласа» с графическим
 интерфейсом — точный там, где знание полно, и откровенный там, где наука ставит
 стены. Ноль зависимостей: стандартная библиотека Python + собранное Go-ядро.
+Лицензия: [MIT](LICENSE).
 
 ![Laplace Demon](docs/screenshot.png)
-
-English version: [README_EN.md](README_EN.md) · Лицензия: [MIT](LICENSE)
 
 ## Графический интерфейс
 
 Дважды щёлкни `start_gui.cmd` или запусти:
 
 ```powershell
-Set-Location -LiteralPath 'D:\NewOld\программ\theory_all\demon_laplas'
+cd demon_laplas
 python gui.py
 ```
 
@@ -40,11 +41,13 @@ python gui.py
 Событие A/E во всех вкладках задаётся конструктором (тип вопроса + номер
 клетки/кубита + значение), поэтому синтаксически неверное событие собрать
 нельзя; границы номеров следуют за шириной мира. Интерфейс полностью на
-английском языке. Семь вкладок: **Classical** (точный
-классический расчёт), **From Events** (демон из событий), **Continuous** (RK4 и
-горизонт Ляпунова), **Quantum (Go)** (Go-ядро с декогеренцией + кнопка квантовой
-стены), **Formula L** (информационная формула), **Active Inference** (агент
-Фристона, покупающий знание) и **The Walls** (Бекенштейн, Гёдель/Вольперт).
+английском языке. Восемь вкладок: **Classical** (точный классический расчёт +
+Retrodict + Linear shortcut), **From Events** (демон из событий), **Continuous**
+(RK4 и горизонт Ляпунова), **Quantum (Go)** (Go-ядро с декогеренцией, квантовая
+стена, CHSH, Read a qubit, Rewind), **Formula L** (информационная формула +
+световой конус + макроэнтропия), **Active Inference** (агент Фристона,
+покупающий знание), **The Walls** (Бекенштейн, Ландауэр, Гёдель/Вольперт) и
+**The Game** (обгони демона).
 
 ## Active Inference (принцип свободной энергии)
 
@@ -247,7 +250,6 @@ x(t + n) = F_rule^n(x(t))
 ## Запуск
 
 ```powershell
-cd D:\NewOld\программ\theory_all\demon_laplas
 python demon.py --state 0001000 --rule 30 --steps 20
 python demon.py --state 0001000 --rule 30 --steps 20 --cell 3
 ```
@@ -287,7 +289,7 @@ state=11
 со средой вынесен в нативную программу без сторонних зависимостей:
 
 ```powershell
-Set-Location -LiteralPath 'D:\NewOld\программ\theory_all\demon_laplas\native_quantum'
+cd native_quantum
 go run .
 ```
 
