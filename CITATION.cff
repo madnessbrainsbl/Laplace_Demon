@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this software in research or teaching, please cite it as below."
+title: "Laplace Demon: an honest predictor laboratory for finite universes"
+type: software
+authors:
+  - name: "madnessbrainsbl"
+repository-code: "https://github.com/madnessbrainsbl/Laplace_Demon"
+url: "https://github.com/madnessbrainsbl/Laplace_Demon"
+license: MIT
+version: 1.0.0
+date-released: "2026-07-17"
+abstract: >-
+  A dependency-free desktop laboratory that executes the Laplace's demon
+  thought experiment honestly: exact prediction and retrodiction in finite
+  cellular universes, law inference from observed events, measured Lyapunov
+  horizons, a quantum kernel with decoherence and a CHSH Bell test, the
+  information-theoretic Laplace coefficient L = I(E;K)/H(E), active-inference
+  knowledge foraging, and executable demonstrations of the Bekenstein,
+  Landauer, Godel/Wolpert and computational-irreducibility limits — plus a
+  game in which a human observer loses to determinism.
+keywords:
+  - laplace-demon
+  - determinism
+  - cellular-automata
+  - information-theory
+  - quantum-mechanics
+  - bell-inequality
+  - chaos-theory
+  - active-inference
+  - thermodynamics-of-information
+  - philosophy-of-science

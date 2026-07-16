@@ -8,13 +8,13 @@
 ![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)
 ![Go](https://img.shields.io/badge/go-kernel-00ADD8?logo=go&logoColor=white)
 ![Dependencies](https://img.shields.io/badge/dependencies-none-success)
-![Tests](https://img.shields.io/badge/tests-102_passing-success)
+[![CI](https://github.com/madnessbrainsbl/Laplace_Demon/actions/workflows/ci.yml/badge.svg)](https://github.com/madnessbrainsbl/Laplace_Demon/actions/workflows/ci.yml)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![GitHub stars](https://img.shields.io/github/stars/madnessbrainsbl/Laplace_Demon)
 
 [English](README.md) • [Русский](README.ru.md)
 
-<img src="docs/screenshot.png" alt="Laplace Demon GUI" width="900"/>
+<img src="docs/demo.gif" alt="Laplace Demon — live demo" width="840"/>
 
 </div>
 
