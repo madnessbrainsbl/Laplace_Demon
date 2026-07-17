@@ -14,6 +14,8 @@
 
 [English](README.md) • [Русский](README.ru.md)
 
+**[▶ Живая демонстрация в браузере](https://madnessbrainsbl.github.io/Laplace_Demon/)** • [⬇ Скачать для Windows](https://github.com/madnessbrainsbl/Laplace_Demon/releases/latest)
+
 <img src="docs/demo.gif" alt="Laplace Demon — живая демонстрация" width="840"/>
 
 </div>

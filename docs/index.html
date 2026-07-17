@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laplace Demon — an honest predictor laboratory</title>
+<meta name="description" content="Exact prediction where knowledge is complete, candid walls where it is not. Cellular automata, chaos, quantum, information theory — and a game where you lose to determinism.">
+<style>
+  :root{
+    --bg:#101418; --panel:#161C23; --field:#1F2733; --border:#2A3442;
+    --fg:#F2F4F7; --muted:#8C97A5; --accent:#C9A227; --accent2:#E0B93B;
+    --dark:#0B0E12; --green:#3FB950; --green2:#56D364; --red:#D9534F;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:var(--bg); color:var(--fg); font:16px/1.55 "Segoe UI",system-ui,sans-serif}
+  a{color:var(--accent2)}
+  .wrap{max-width:900px; margin:0 auto; padding:0 20px}
+  header{padding:64px 0 40px; text-align:center}
+  h1{font-size:44px; letter-spacing:6px; color:var(--accent); font-weight:600}
+  .tag{color:var(--muted); margin-top:12px; font-size:18px}
+  .cta{margin-top:28px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap}
+  .btn{display:inline-block; padding:12px 22px; border-radius:6px; text-decoration:none;
+       font-weight:600; border:1px solid var(--border)}
+  .btn.gold{background:var(--accent); color:#15181D; border-color:var(--accent)}
+  .btn.gold:hover{background:var(--accent2)}
+  .btn.ghost{color:var(--fg)}
+  .btn.ghost:hover{border-color:var(--accent)}
+  section{padding:36px 0}
+  h2{font-size:26px; margin-bottom:6px}
+  .sub{color:var(--muted); margin-bottom:18px}
+  .card{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:22px}
+  canvas{display:block; width:100%; background:var(--dark); border:1px solid var(--border); border-radius:6px}
+  .controls{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; align-items:center}
+  button{background:var(--accent); border:none; color:#15181D; font-weight:600;
+         padding:10px 18px; border-radius:6px; cursor:pointer; font-size:15px}
+  button:hover{background:var(--accent2)}
+  button.dim{background:var(--field); color:var(--fg); border:1px solid var(--border)}
+  select{background:var(--field); color:var(--fg); border:1px solid var(--border);
+         padding:9px 12px; border-radius:6px; font-size:15px}
+  .score{margin-top:12px; font-family:Consolas,monospace; font-size:15px}
+  .status{color:var(--muted); margin-top:6px; min-height:44px}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; margin-top:18px}
+  .cell{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px}
+  .cell b{color:var(--accent2)}
+  .cell p{color:var(--muted); font-size:14px; margin-top:6px}
+  code{background:var(--dark); border:1px solid var(--border); border-radius:4px;
+       padding:2px 7px; font-family:Consolas,monospace; font-size:14px}
+  pre{background:var(--dark); border:1px solid var(--border); border-radius:6px;
+      padding:14px; overflow-x:auto; font-size:14px; margin-top:10px}
+  footer{padding:40px 0 60px; color:var(--muted); text-align:center; font-size:14px}
+  .note{color:var(--muted); font-size:14px; margin-top:12px}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <h1>LAPLACE&nbsp;&nbsp;DEMON</h1>
+  <div class="tag">An honest predictor for finite universes — exact where knowledge is complete, candid where it is not.</div>
+  <div class="cta">
+    <a class="btn gold" href="https://github.com/madnessbrainsbl/Laplace_Demon/releases/latest">⬇ Download for Windows</a>
+    <a class="btn ghost" href="https://github.com/madnessbrainsbl/Laplace_Demon">★ GitHub</a>
+    <a class="btn ghost" href="https://github.com/madnessbrainsbl/Laplace_Demon/blob/main/README.ru.md">Русский</a>
+  </div>
+  <p class="note">This page is a taste. The full laboratory — 8 tabs, quantum kernel, Bell test, Landauer costs, retrodiction — is a 10&nbsp;MB exe with zero dependencies.</p>
+</header>
+
+<section class="wrap">
+  <h2>The world computes. Watch it.</h2>
+  <div class="sub">One ring of cells, one local law, no randomness anywhere. The demon has no shortcut for rule&nbsp;30 — it must live through every row, and so does this canvas.</div>
+  <div class="card">
+    <canvas id="space" height="360"></canvas>
+    <div class="controls">
+      <button id="replay">Replay</button>
+      <select id="rule">
+        <option value="30" selected>Rule 30 — chaos (no shortcut exists)</option>
+        <option value="90">Rule 90 — fractal (linear: demon jumps in O(log t))</option>
+        <option value="110">Rule 110 — Turing-complete</option>
+        <option value="150">Rule 150 — linear XOR</option>
+      </select>
+      <span class="status" id="spaceStatus" style="min-height:auto"></span>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Outrun the demon</h2>
+  <div class="sub">A hidden 31-cell world runs rule&nbsp;30. You see one cell. Call its next bit. The demon never guesses — it computes. Every bit you fail to call was determined before you clicked.</div>
+  <div class="card">
+    <canvas id="game" height="210"></canvas>
+    <div class="controls">
+      <button id="g0">Next bit: 0</button>
+      <button id="g1">Next bit: 1</button>
+      <button id="gnew" class="dim">New world</button>
+    </div>
+    <div class="score" id="score"></div>
+    <div class="status" id="gameStatus"></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>The full laboratory</h2>
+  <div class="sub">Eight tabs in the desktop app — every claim executed, never asserted.</div>
+  <div class="grid">
+    <div class="cell"><b>Classical</b><p>Exact events, retrodiction (Gardens of Eden, the arrow of time), and the GF(2) fast-forward: 10<sup>18</sup> steps in milliseconds where the law is linear — an honest refusal where it is not.</p></div>
+    <div class="cell"><b>From Events</b><p>The law is not given: the demon infers every rule consistent with an observed history and answers only as firmly as the evidence allows.</p></div>
+    <div class="cell"><b>Continuous</b><p>RK4 mechanics with a <i>measured</i> Lyapunov exponent and the prediction horizon T = (1/λ)·ln(tol/err).</p></div>
+    <div class="cell"><b>Quantum (Go)</b><p>Density matrix with decoherence, the wavefunction limit (L=0 at full knowledge), CHSH = 2√2, measurement disturbance, and Rewind — the unitary world remembers.</p></div>
+    <div class="cell"><b>Formula L</b><p>L = I(E;K)/H(E) computed exactly; the minimal demon H<sub>irr</sub>; the light-cone embedded demon; macro entropy — the second law as designed ignorance.</p></div>
+    <div class="cell"><b>Active Inference</b><p>An agent buys knowledge cell by cell and becomes a demon — or stalls on XOR-like laws, where greedy curiosity provably overpays.</p></div>
+    <div class="cell"><b>The Walls</b><p>Bekenstein capacity, Landauer's kT·ln2 per bit, the Gödel/Wolpert diagonal and the monotheism theorem — enumerated, not cited.</p></div>
+    <div class="cell"><b>The Game</b><p>The demo above, plus animations of the hidden world stepping its law — randomness as a knowledge gap, experienced first-hand.</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Run it</h2>
+  <div class="card">
+    <p><b>Windows:</b> <a href="https://github.com/madnessbrainsbl/Laplace_Demon/releases/latest">download <code>LaplaceDemon.exe</code></a> and double-click. No installation, no dependencies.</p>
+    <p style="margin-top:10px"><b>From source</b> (any OS with Python 3.10+):</p>
+    <pre>git clone https://github.com/madnessbrainsbl/Laplace_Demon.git
+cd Laplace_Demon
+python gui.py</pre>
+    <p class="note">102 unit tests and the Go kernel run in CI on every push. MIT license. Citable via <code>CITATION.cff</code>.</p>
+  </div>
+</section>
+
+<footer class="wrap">
+  Laplace Demon · MIT ·
+  <a href="https://github.com/madnessbrainsbl/Laplace_Demon">github.com/madnessbrainsbl/Laplace_Demon</a>
+</footer>
+
+<script>
+"use strict";
+const CSS = getComputedStyle(document.documentElement);
+const C = name => CSS.getPropertyValue(name).trim();
+
+function nextState(cells, rule){
+  const n = cells.length, out = new Array(n);
+  for(let i = 0; i < n; i++){
+    const hood = (cells[(i - 1 + n) % n] << 2) | (cells[i] << 1) | cells[(i + 1) % n];
+    out[i] = (rule >> hood) & 1;
+  }
+  return out;
+}
+
+/* ---------- spacetime ---------- */
+const sc = document.getElementById("space");
+const sctx = sc.getContext("2d");
+let spaceTimer = null;
+
+function runSpacetime(){
+  clearTimeout(spaceTimer);
+  const rule = parseInt(document.getElementById("rule").value, 10);
+  sc.width = sc.clientWidth * devicePixelRatio;
+  sc.height = 360 * devicePixelRatio;
+  sctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  const W = sc.clientWidth, H = 360;
+  const cellW = 12, cols = Math.floor((W - 24) / cellW) | 1;
+  const rows = Math.floor((H - 16) / cellW);
+  const left = (W - cols * cellW) / 2, top = 8;
+  let cells = new Array(cols).fill(0);
+  cells[(cols / 2) | 0] = 1;
+  sctx.fillStyle = C("--dark");
+  sctx.fillRect(0, 0, W, H);
+  let row = 0;
+  const status = document.getElementById("spaceStatus");
+  (function step(){
+    sctx.fillStyle = C("--green");
+    for(let i = 0; i < cols; i++){
+      if(!cells[i]) continue;
+      sctx.beginPath();
+      sctx.arc(left + i * cellW + cellW / 2, top + row * cellW + cellW / 2, cellW * 0.38, 0, 7);
+      sctx.fill();
+    }
+    status.textContent = "step " + row + "/" + (rows - 1);
+    cells = nextState(cells, rule);
+    if(++row < rows){ spaceTimer = setTimeout(step, 90); }
+    else { status.textContent = "done — " + (rows - 1) + " steps, zero random events"; }
+  })();
+}
+document.getElementById("replay").onclick = runSpacetime;
+document.getElementById("rule").onchange = runSpacetime;
+
+/* ---------- the game ---------- */
+const gc = document.getElementById("game");
+const gctx = gc.getContext("2d");
+const G = { width: 31, shown: 26, rule: 30 };
+let world, history, right, total, animating = false;
+
+function centerBit(){ return world[(G.width / 2) | 0]; }
+function advance(){ world = nextState(world, G.rule); history.push(centerBit()); }
+
+function newWorld(){
+  world = Array.from({length: G.width}, () => Math.random() < 0.5 ? 1 : 0);
+  history = []; right = 0; total = 0;
+  for(let i = 0; i < G.shown; i++) advance();
+  drawGame(null, null, null);
+  setScore("A fresh hidden world is running rule 30. Call the next center bit.");
+}
+
+function setScore(msg){
+  const pct = total ? " (" + Math.round(100 * right / total) + "%)" : "";
+  document.getElementById("score").textContent =
+    "You: " + right + "/" + total + pct + "    Demon: " + total + "/" + total +
+    " (computes, never guesses)    Coin: ~50%";
+  document.getElementById("gameStatus").textContent = msg;
+}
+
+function drawGame(wave, reveal, ring){
+  gc.width = gc.clientWidth * devicePixelRatio;
+  gc.height = 210 * devicePixelRatio;
+  gctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  const W = gc.clientWidth;
+  gctx.fillStyle = C("--dark"); gctx.fillRect(0, 0, W, 210);
+  gctx.font = "12px Consolas,monospace"; gctx.fillStyle = C("--muted");
+  gctx.fillText("THE HIDDEN WORLD — 31 cells running the law; you see only the open one", 12, 22);
+  const tile = Math.min(22, (W - 40) / G.width), lx = (W - tile * G.width) / 2, ly = 34;
+  const mid = (G.width / 2) | 0;
+  for(let i = 0; i < G.width; i++){
+    gctx.fillStyle = i === mid ? C("--dark") : C("--field");
+    gctx.strokeStyle = C("--border");
+    gctx.fillRect(lx + i * tile, ly, tile - 1, tile - 1);
+    gctx.strokeRect(lx + i * tile, ly, tile - 1, tile - 1);
+    if(i !== mid){
+      gctx.fillStyle = "#39434f";
+      gctx.fillText("?", lx + i * tile + tile * 0.32, ly + tile * 0.72);
+    } else if(reveal !== null && reveal !== undefined){
+      gctx.beginPath();
+      gctx.arc(lx + i * tile + tile / 2, ly + tile / 2, tile * 0.3, 0, 7);
+      if(reveal){ gctx.fillStyle = C("--green"); gctx.fill(); }
+      else { gctx.strokeStyle = C("--muted"); gctx.stroke(); }
+    }
+  }
+  if(wave !== null && wave !== undefined){
+    gctx.strokeStyle = C("--accent2"); gctx.lineWidth = 2;
+    gctx.strokeRect(lx + wave * tile - 1, ly - 1, tile + 1, tile + 1);
+    gctx.lineWidth = 1;
+    gctx.fillStyle = C("--accent2");
+    gctx.fillText("one lawful step...", lx, ly + tile + 18);
+  }
+  gctx.fillStyle = C("--muted");
+  gctx.fillText("THE CENTER CELL'S HISTORY — call the next bit", 12, ly + tile + 40);
+  const dot = 15, gap = 5, pitch = dot + gap;
+  const fit = Math.min(history.length, Math.floor((W - 60) / pitch) - 1);
+  const dots = history.slice(-fit);
+  const tx = (W - pitch * (dots.length + 1)) / 2, ty = ly + tile + 56;
+  dots.forEach((bit, i) => {
+    const cx = tx + i * pitch + dot / 2, cy = ty + dot / 2;
+    gctx.beginPath(); gctx.arc(cx, cy, dot * (bit ? 0.5 : 0.36), 0, 7);
+    if(bit){ gctx.fillStyle = C("--green"); gctx.fill(); }
+    else { gctx.strokeStyle = C("--muted"); gctx.stroke(); }
+    if(ring && i === dots.length - 1){
+      gctx.beginPath(); gctx.arc(cx, cy, dot * 0.72, 0, 7);
+      gctx.strokeStyle = ring; gctx.lineWidth = 2; gctx.stroke(); gctx.lineWidth = 1;
+    }
+  });
+  const sx = tx + dots.length * pitch + dot / 2, sy = ty + dot / 2;
+  gctx.beginPath(); gctx.arc(sx, sy, dot * 0.6, 0, 7);
+  gctx.strokeStyle = C("--accent"); gctx.lineWidth = 2; gctx.stroke(); gctx.lineWidth = 1;
+  gctx.fillStyle = C("--accent");
+  gctx.fillText("?", sx - 3.5, sy + 4);
+}
+
+function guess(bit){
+  if(animating) return;
+  animating = true;
+  advance();
+  const actual = history[history.length - 1];
+  total++; const hit = bit === actual; if(hit) right++;
+  let msg = hit ? "Correct." : "Wrong — it was " + actual + ".";
+  if(total >= 20 && Math.abs(right / total - 0.5) < 0.12){
+    msg += " Hovering at the coin line: every bit was determined before you guessed.";
+  }
+  let wave = 0;
+  (function sweep(){
+    if(wave < G.width){
+      drawGame(wave, null, null); wave += 2;
+      setTimeout(sweep, 26);
+    } else {
+      drawGame(null, actual, null);
+      setTimeout(() => {
+        drawGame(null, actual, hit ? C("--green2") : C("--red"));
+        setScore(msg);
+        animating = false;
+      }, 220);
+    }
+  })();
+}
+
+document.getElementById("g0").onclick = () => guess(0);
+document.getElementById("g1").onclick = () => guess(1);
+document.getElementById("gnew").onclick = newWorld;
+
+addEventListener("resize", () => { drawGame(null, null, null); });
+runSpacetime();
+newWorld();
+</script>
+</body>
+</html>
