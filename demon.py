@@ -109,9 +109,10 @@ def retrodiction_report(state: str, rule: int) -> str:
         lines.append(f"Possible pasts: {shown}{suffix}")
         lines.append(
             f"THE ARROW OF TIME: forward the law gives one future, backward it"
-            f" gives {len(pasts)} pasts — {math.log2(len(pasts)):.3f} bits of"
-            " history were destroyed. Even a demon with the complete present"
-            " cannot know which past happened."
+            f" gives {len(pasts)} pasts — assuming a uniform prior over them,"
+            f" {math.log2(len(pasts)):.3f} bits of history were destroyed."
+            " Even a demon with the complete present cannot know which past"
+            " happened."
         )
         lines.append(
             "Irreversibility, not ignorance: this is the wall Laplace's own"
