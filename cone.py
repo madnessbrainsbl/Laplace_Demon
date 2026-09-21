@@ -52,8 +52,9 @@ def light_cone_report(width: int, rule: int, horizon: int, event: str) -> str:
     profile = embedded_demon_profile(width, rule, horizon, event)
     cone_size = len(light_cone_cells(width, 0, horizon))
     lines = [
-        f"Embedded demon: signals travel 1 cell/step, so a demon predicting"
-        f" {horizon} step(s) ahead knows only {cone_size} of {width} cells.",
+        f"Toy timing model: signals travel 1 cell/step, and the observation"
+        f" window is assumed to end before the {horizon}-step prediction starts."
+        f" It then contains {cone_size} of {width} cells.",
         "L_O by the demon's seat in the world:",
     ]
     for position, coefficient in enumerate(profile):
@@ -69,15 +70,15 @@ def light_cone_report(width: int, rule: int, horizon: int, event: str) -> str:
         )
     elif full_seats == 0:
         lines.append(
-            "NO GLOBAL NOW: no seat inside the world can predict this event —"
-            " the knowledge it needs lies outside every light cone."
+            "Under this timing assumption, no seat has enough selected-cell"
+            " knowledge for this event. Changing collection or reply times can"
+            " change the result."
         )
     else:
         lines.append(
-            f"Only {full_seats} of {width} seats can be a demon for this event:"
-            " being all-knowing is a property of WHERE you sit, not how smart"
-            " you are. The external demon of the other tabs gets the whole"
-            " present as a gift no inhabitant receives."
+            f"Only {full_seats} of {width} seats have enough selected-cell"
+            " knowledge for this event under the toy timing model. The other"
+            " tabs assume the complete model state as an input."
         )
     return "\n".join(lines)
 

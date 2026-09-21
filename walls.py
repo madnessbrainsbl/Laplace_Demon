@@ -108,11 +108,11 @@ def landauer_report(required_bits: int, temperature: float) -> str:
     lines = [
         "Landauer bound: erasing one bit costs at least kT*ln2 of heat.",
         f"Temperature: {temperature:g} K -> {per_bit:.3e} J per bit",
-        f"Minimal demon for this event: {required_bits} bit(s) of knowledge K",
+        f"Selected observation record for this event: {required_bits} bit(s)",
         f"Heat to reset that memory for the next observation: {cost:.3e} J",
-        "This is Bennett's resolution of Maxwell's demon: the demon's sorting"
-        " gains are repaid, with interest set by kT*ln2, when its memory is"
-        " erased. Knowledge is physical — L_O is bought in joules.",
+        "The cost applies when a memory is reset. It is not a charge for merely"
+        " knowing a fact, and it does not establish the minimum memory needed"
+        " for every possible predictor.",
         "Verified in the lab (Berut et al., Nature 2012).",
     ]
     return "\n".join(lines)
@@ -201,7 +201,7 @@ def chsh_value(bits: str, gates: str, first: int = 0, second: int = 1) -> float:
 
 
 def chsh_report(bits: str, gates: str, first: int = 0, second: int = 1) -> str:
-    """Bell test: a number no local deterministic demon can reproduce."""
+    """Bell test: a number outside the local-hidden-variable bound."""
     value = chsh_value(bits, gates, first, second)
     lines = [
         "Unitary state only: environment channels are not applied in this report.",
@@ -212,9 +212,9 @@ def chsh_report(bits: str, gates: str, first: int = 0, second: int = 1) -> str:
     ]
     if value > LOCAL_DETERMINISM_BOUND + PROBABILITY_TOLERANCE:
         lines.append(
-            "BELL VIOLATION: no local deterministic ledger — no classical demon"
-            " with pre-written answers — can produce these correlations."
-            " (Loophole-free experiments confirmed this in 2015.)"
+            "BELL VIOLATION: no local hidden-variable model under the Bell-test"
+            " assumptions can produce these correlations. This does not exclude"
+            " all deterministic or nonlocal interpretations."
         )
     else:
         lines.append(
@@ -225,7 +225,7 @@ def chsh_report(bits: str, gates: str, first: int = 0, second: int = 1) -> str:
 
 
 def quantum_wall_report(bits: str, gates: str, event: str, qubit: int = 0) -> str:
-    """Operational wavefunction limit: L_O=0 for an undetermined outcome."""
+    """Operational result for one fixed wavefunction and measurement event."""
     state = apply_gates(bits, gates)
     qubits = len(bits)
     validate_qubit(qubit, qubits)
@@ -260,14 +260,15 @@ def quantum_wall_report(bits: str, gates: str, event: str, qubit: int = 0) -> st
         )
     else:
         lines.append(
-            "THE QUANTUM WALL IN THIS MODEL: the demon holds the complete"
-            " wavefunction, yet the event's entropy does not drop by a single"
-            " bit. L_O = 0 exactly."
+            "FOR THIS FIXED STATE: K is constant across the ensemble, so it"
+            " carries no information about this undetermined measurement event"
+            " and L_O = 0 in this calculation."
         )
         lines.append(
-            "This is an operational prediction from the wavefunction, not a"
-            " proof against every interpretation. Deterministic interpretations"
-            " add variables that this model neither stores nor makes accessible."
+            "Knowledge of a preparation can still reduce predictive entropy in a"
+            " mixed ensemble. This operational result is not a proof against every"
+            " interpretation; deterministic interpretations add variables this"
+            " model neither stores nor makes accessible."
         )
     lines += [
         "",

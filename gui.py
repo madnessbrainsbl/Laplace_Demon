@@ -52,7 +52,7 @@ QUANTUM_EXE = BUNDLE_DIR / "native_quantum" / "quantum-demon.exe"
 QUANTUM_TIMEOUT_SECONDS = 30
 QUANTUM_MARKER = "Basis state probabilities:"
 MECHANICS_SYSTEMS = {
-    "Thrown ball — no chaos": "ball",
+    "Thrown ball — stable linear model": "ball",
     "Double pendulum — chaos": "pendulum",
 }
 INITIAL_ERROR_PRESETS = ("1e-1", "1e-2", "1e-3", "1e-6", "1e-9", "1e-12")
@@ -973,10 +973,9 @@ class DemonGUI:
             notebook,
             "Continuous",
             "RK4 flow, measured Lyapunov exponent, prediction horizon",
-            "Continuous mechanics without probability: the event is integrated"
-            " numerically, the Lyapunov exponent is measured (never assumed), and"
-            " the verdict is trusted only inside T_pred ="
-            " (1/lambda)·ln(tolerance/error).",
+            "Continuous mechanics: the event is integrated numerically, a"
+            " finite-time Lyapunov estimate is computed, and RK4 h/h/2 is"
+            " compared. These are model diagnostics, not a proof of the event.",
         )
         self.mechanics_system = tk.StringVar(value=next(iter(MECHANICS_SYSTEMS)))
         ttk.Label(tab, text="System").grid(row=2, column=0, sticky="w", pady=6)
@@ -1244,7 +1243,7 @@ class DemonGUI:
             (
                 ("Compute the formula", self._calculate_information),
                 ("Embedded demon (light cone)", self._show_cone),
-                ("Macro entropy (second law)", self._show_macro),
+                ("Macro entropy (coarse model)", self._show_macro),
             ),
         )
         self.info_result = self._add_result(tab, 8)
@@ -1367,11 +1366,12 @@ class DemonGUI:
             notebook,
             "The Walls",
             "Where knowledge stops paying: capacity and self-reference",
-            "Bekenstein: the smallest knowledge that determines the event sets"
-            " the bits a demon's carrier must physically hold. Godel/Wolpert"
+            "Bekenstein: this tab compares carrier capacity with selected-cell"
+            " observations; it does not derive universal predictor memory. Godel/Wolpert"
             " (arXiv:0708.1362): a demon inside a world that reads its"
             " prediction is wrong under every strategy — and no two devices can"
-            " strongly infer each other. The quantum wall lives on the Quantum tab.",
+            " strongly infer each other under the stated formal conditions."
+            " The quantum model lives on the Quantum tab.",
         )
         self.walls_width = tk.StringVar(value="7")
         self.walls_rule = tk.StringVar(value="30")
@@ -1408,7 +1408,7 @@ class DemonGUI:
             tab,
             9,
             (
-                ("H_irr(m): minimum over all knowledge", self._calculate_irreducible),
+                ("H_irr(m): minimum over selected cells", self._calculate_irreducible),
                 ("Bekenstein bound on the carrier", self._show_bekenstein),
                 ("Landauer cost of knowledge", self._show_landauer),
             ),

@@ -167,12 +167,13 @@ def irreducible_report(width: int, rule: int, steps: int, event: str) -> str:
         level for level in levels if level.entropy <= ENTROPY_TOLERANCE
     )
     lines.append(
-        f"Minimal demon: {minimal.cells} cell(s) of {width} — the carrier needs"
-        f" at least {minimal.cells} bits of world-state knowledge."
+        f"Minimal selected-cell observation: {minimal.cells} cell(s) of {width}."
+        " This is not a universal lower bound on memory: a derived feature can"
+        " encode an event with fewer bits."
     )
     lines.append(
-        "H_irr over all knowledge = 0: the event's classical randomness is"
-        " fully curable; the incurable part lives only in the quantum."
+        "H_irr over all selected cells = 0: this event is fixed in the finite"
+        " classical model under the chosen observation scheme."
     )
     return "\n".join(lines)
 
