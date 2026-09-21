@@ -28,9 +28,9 @@ dependencies: Python stdlib + a prebuilt Go kernel.
 
 [Model assumptions, sources and Windows build instructions](SCIENTIFIC_SCOPE.md).
 
-## What's new
+## Features
 
-The latest wave expands the laboratory and sharpens the scope of each model:
+Explore prediction in several models:
 
 - **Retrodict the past** (Classical) — exact predecessor enumeration: Gardens
   of Eden and immediate predecessor counts in a finite cellular model.
@@ -48,12 +48,10 @@ The latest wave expands the laboratory and sharpens the scope of each model:
   which initial cells are supplied; communication is not simulated.
 - **Macro entropy** (Formula L) — uncertainty in a chosen coarse-grained
   ensemble; it is not by itself a derivation of the second law.
-- **The Game** (new tab) — outrun the demon: call Rule 30's next bit; the
+- **The Game** — outrun the demon: call Rule 30's next bit; the
   demon computes exactly within the model; your score is compared with a fair-coin benchmark.
 - Structured input everywhere: event pickers, a gate-program builder, bounded
   spinboxes and keystroke filters — an invalid input can no longer be typed.
-- Python regression tests and Go test/vet. The graphical interface still needs a live
-  visual pass after material UI changes.
 
 ## Graphical interface
 
@@ -170,8 +168,7 @@ python mechanics.py --system pendulum --horizon 5 --error 1e-6 --tolerance 1.0
 
 ## Physical and logical walls
 
-The **The Walls** tab demonstrates limits that were previously enforced only by
-construction:
+The **The Walls** tab explores physical and logical limits:
 
 - **Knowledge capacity (Bekenstein).** `H_irr(m) = min H(E|K)` is calculated
   over every knowledge set K containing m cells. The profile reports how many
@@ -231,7 +228,7 @@ Four demonstrations complete the local interpretation of Laplace's idea:
 
 ## Feedback, measurement, and coarse-graining
 
-Three demonstrations that turn the remaining prohibitions into running code:
+Three demonstrations of observation and information loss:
 
 - **Embedded observer (light cone)** (Formula L, [cone.py](cone.py)) — exact
   initial data inside a spatial mask whose radius equals the horizon by

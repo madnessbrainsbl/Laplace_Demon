@@ -2,8 +2,8 @@
 
 The cellular calculations are exact within a finite, specified deterministic
 model. Numerical mechanics and quantum calculations have floating-point error.
-Passing tests checks implementations and regression cases; it does not prove
-that a universal Laplace demon is possible or impossible in nature.
+These models do not establish whether a universal Laplace demon is possible
+or impossible in nature.
 
 - `mechanics.py`: a finite coordinate sweep and exponential-growth horizon are
   heuristics. Initial-state coordinates mix units, and the input-error parameter
