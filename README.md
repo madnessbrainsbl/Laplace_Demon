@@ -26,6 +26,8 @@ and illustrates limits of particular prediction methods. It does not prove that
 Laplace's demon is impossible under every possible law of nature. Zero
 dependencies: Python stdlib + a prebuilt Go kernel.
 
+[Model assumptions, sources and Windows build instructions](SCIENTIFIC_SCOPE.md).
+
 ## What's new
 
 The latest wave expands the laboratory and sharpens the scope of each model:
@@ -37,20 +39,20 @@ The latest wave expands the laboratory and sharpens the scope of each model:
 - **CHSH before environment** (Quantum) — a numerical Bell test: entangled
   pairs reach the Tsirelson bound 2*sqrt(2), beyond the local-hidden-variable
   bound under the Bell-test assumptions.
-- **Read a qubit** (Quantum) — measurement as disturbance: extracting one bit
-  halves the purity of a Bell pair; reading a classical bit is free.
+- **Read a qubit** (Quantum) — Z measurement with the outcome ignored
+  halves a Bell pair's purity; a Z-diagonal state stays unchanged.
 - **Rewind** (Quantum) — the unitary world remembers: forward + reversed
   program returns the state exactly, unless a reading broke the return.
 - **Landauer cost** (The Walls) — a reset memory costs at least kT*ln2 per bit.
-- **Embedded observer / light cone** (Formula L) — a stated toy timing model
-  limits which cells are available before a prediction begins.
+- **Embedded observer / light cone** (Formula L) — a spatial mask specifies
+  which initial cells are supplied; communication is not simulated.
 - **Macro entropy** (Formula L) — uncertainty in a chosen coarse-grained
   ensemble; it is not by itself a derivation of the second law.
 - **The Game** (new tab) — outrun the demon: call Rule 30's next bit; the
-  demon computes (100%), a bounded observer hovers at the coin line (~50%).
+  demon computes exactly within the model; your score is compared with a fair-coin benchmark.
 - Structured input everywhere: event pickers, a gate-program builder, bounded
   spinboxes and keystroke filters — an invalid input can no longer be typed.
-- 104 unit tests and Go test/vet. The graphical interface still needs a live
+- Python regression tests and Go test/vet. The graphical interface still needs a live
   visual pass after material UI changes.
 
 ## Graphical interface
@@ -149,16 +151,18 @@ the cost of uncertainty about the complementary observable.
 
 The **Continuous** tab models a ball with linear air resistance and a chaotic
 double pendulum using RK4. Ball integration stops at ground impact
-(`t ≈ 3.306 s`). The largest Lyapunov exponent is measured with Benettin
-renormalization rather than assumed, and the prediction horizon is calculated
-from that measured value:
+(`t ≈ 3.306 s`). A coordinate sweep with Benettin renormalization estimates
+finite-time growth. Its largest sampled rate gives the heuristic:
 
 ```text
 T_pred = (1 / λ) * ln(δ_tolerance / δ_0)
 ```
 
-For the supplied pendulum, `λ ≈ 1.6 1/s`; therefore `t = 5 s` with
-`δ_0 = 1e-6` is still inside the measured horizon.
+This is not a guaranteed horizon. Raw state coordinates mix units, transient
+growth can exceed this estimate, and input uncertainty is not propagated to the
+event. The report always says **NOT CERTIFIED**. RK4 at `h` and `h/2` compares
+the displayed output (ball position and impact time, or pendulum angle), not an
+unrelated trajectory. This is a convergence diagnostic, not an error bound.
 
 ```powershell
 python mechanics.py --system pendulum --horizon 5 --error 1e-6 --tolerance 1.0
@@ -171,11 +175,12 @@ construction:
 
 - **Knowledge capacity (Bekenstein).** `H_irr(m) = min H(E|K)` is calculated
   over every knowledge set K containing m cells. The profile reports how many
-  state bits are minimally required to determine the event. A separate button
+  directly observed cells suffice to determine the event within that restricted
+  observation class; this is not a universal predictor-memory bound. A separate button
   evaluates the physical bound `I <= 2πRE/(ħc·ln2)` for a carrier with the
   specified radius and energy. For toy worlds this bound is astronomically
   loose and does not by itself prove that a predictor must be larger than its
-  system.
+  system. A capacity upper bound does not establish attainable storage.
 - **Diagonal X* (Gödel/Wolpert).** The world reads the demon's published
   prediction and does the opposite. Every possible one-bit strategy fails when
   the predictor is inside the world, while an external predictor succeeds.
@@ -205,7 +210,9 @@ Four demonstrations complete the local interpretation of Laplace's idea:
   the 256 elementary rules are linear over GF(2). For those rules, polynomial
   exponentiation jumps across `10^18` steps in milliseconds with `O(log t)`
   work. For non-linear rules this particular method does not apply; finite
-  simulation can still detect and skip a cycle. This is an algorithmic boundary
+  simulation can still detect and skip a cycle. Searches stop after 10,000
+  states or 1,000,000 cell updates and report a resource limit if unresolved.
+  This is an algorithmic boundary
   of the laboratory, not a proof of computational irreducibility.
 
   ```powershell
@@ -217,22 +224,22 @@ Four demonstrations complete the local interpretation of Laplace's idea:
   Bell state reaches the Tsirelson bound `2*sqrt(2) = 2.828427`; local
   deterministic correlations satisfy `S <= 2`. Dephasing and damping are not
   applied in this report, which is stated explicitly in its output.
-- **Landauer cost** (The Walls) — erasing one bit costs at least `kT*ln2`
-  joules. The selected-cell observation count is an input to the illustration,
-  not a universal lower bound on predictor memory.
+- **Landauer cost** (The Walls) — isothermal reset of independent unbiased
+  classical bits releases at least `kT*ln2` average heat per bit. Biased or
+  correlated records require entropy and side information to be considered.
+  The selected-cell count is illustrative, not a universal memory lower bound.
 
 ## Feedback, measurement, and coarse-graining
 
 Three demonstrations that turn the remaining prohibitions into running code:
 
-- **Embedded observer (light cone)** (Formula L, [cone.py](cone.py)) — a toy
-  timing model: signals travel one cell per step and the observation window
-  ends before prediction starts. Changing collection or reply times changes
-  the available knowledge.
-- **Read a qubit** (Quantum) — measurement disturbs: reading a qubit equals
-  full dephasing. The purity of a Bell pair drops from 1.0 to 0.5 through the
-  act of extracting one bit; knowledge not only costs joules — it leaves
-  fingerprints. Reading a classical bit is free, and the report says so.
+- **Embedded observer (light cone)** (Formula L, [cone.py](cone.py)) — exact
+  initial data inside a spatial mask whose radius equals the horizon by
+  convention. This does not simulate signal collection or a relativistic observer.
+- **Read a qubit** (Quantum) — Z measurement with its outcome ignored is full
+  Z dephasing. A Bell pair's purity drops from 1.0 to 0.5; retaining the outcome
+  would instead give a conditional state. Unchanged purity does not imply a
+  physically free measurement; no energy cost is simulated here.
 - **Macro entropy** (Formula L, [macro.py](macro.py)) — the observer sees only
   block sums and can lose predictive detail under deterministic micro-dynamics.
   This finite ensemble metric is not a proof of thermodynamics.
@@ -246,14 +253,13 @@ python macro.py --width 12 --rule 30 --steps 8
 
 - **Rewind** (Quantum) — the unitary world remembers: a gate program run
   forward and then in reverse (H, X and CNOT are self-inverse) returns the
-  state exactly, P(return) = 1. One reading of a qubit midway breaks the
-  return (down to 0.5 for a Bell pair): the arrow of time enters quantum
-  mechanics through measurement and environment, never through the law itself.
+  state within floating-point precision, P(return) ≈ 1. An unrecorded
+  measurement can reduce recovery (to 0.5 for a Bell pair). This does not
+  establish a universal origin of the arrow of time.
 - **The Game** (eighth tab) — outrun the demon: a hidden 31-cell world runs
   Rule 30 and you call the next bit of the center column. The demon never
-  guesses — it computes (always 100%); a bounded observer hovers at the coin
-  line (~50%). "Randomness is a knowledge gap," experienced first-hand: every
-  bit was determined before you guessed it.
+  guesses — it computes within the model. Your score is compared with a fair-coin
+  benchmark. This game does not establish a limit on other prediction strategies.
 
 ## Demon from events
 

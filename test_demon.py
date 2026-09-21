@@ -237,7 +237,28 @@ class DemonTests(unittest.TestCase):
     def test_mechanics_ball_report_does_not_overclaim_certainty(self) -> None:
         report = mechanics_report("ball", 5.0, 1e-6, 1.0)
         self.assertIn("LANDED", report)
-        self.assertIn("MODEL ESTIMATE", report)
+        self.assertIn("NOT CERTIFIED", report)
+        self.assertIn("Impact-time h/h/2 difference", report)
+
+    def test_small_step_error_does_not_certify_input_uncertainty(self) -> None:
+        nominal, _ = simulate_ball(BALL_START, 5.0)
+        perturbed = list(BALL_START)
+        perturbed[2] += 0.01
+        actual, _ = simulate_ball(perturbed, 5.0)
+        self.assertGreater(abs(actual[0] - nominal[0]), 0.02)
+        report = mechanics_report("ball", 5.0, 0.01, 0.02)
+        self.assertIn("NOT CERTIFIED", report)
+        self.assertNotIn("MODEL ESTIMATE", report)
+
+    def test_unresolved_lyapunov_perturbation_is_rejected(self) -> None:
+        with self.assertRaisesRegex(ValueError, "unresolved"):
+            lyapunov_exponent(lambda state: [0.0], [1e20], duration=0.5)
+
+    def test_prediction_budget_preserves_cycle_skipping(self) -> None:
+        with patch("demon.MAX_PREDICTION_STATES", 2):
+            self.assertEqual(predict("0101010", 255, 10**18), "1111111")
+            with self.assertRaisesRegex(ValueError, "simulation budget exhausted"):
+                predict("0" * 30 + "1" + "0" * 30, 30, 10**18)
 
     def test_mechanics_chaos_beyond_horizon_is_honest(self) -> None:
         report = mechanics_report("pendulum", 30.0, 1e-3, 1.0)
@@ -419,9 +440,9 @@ class DemonTests(unittest.TestCase):
 
         report = light_cone_report(7, 30, 1, "cell3=1")
         self.assertIn("full demon here", report)
-        self.assertIn("Toy timing model", report)
+        self.assertIn("Toy spatial mask", report)
         long_horizon = light_cone_report(5, 30, 3, "cell2=1")
-        self.assertIn("light to cross the whole ring", long_horizon)
+        self.assertIn("mask covers the whole ring", long_horizon)
 
     def test_macro_entropy_grows_under_rule_30(self) -> None:
         from macro import macro_entropy_series, macro_report
@@ -450,7 +471,7 @@ class DemonTests(unittest.TestCase):
         self.assertIn("1.000000 -> 0.500000", report)
         self.assertIn("MEASUREMENT DISTURBS", report)
 
-    def test_reading_a_classical_bit_is_free(self) -> None:
+    def test_reading_a_classical_bit_preserves_the_state(self) -> None:
         from gui import read_qubit_report
 
         report = read_qubit_report("00", "X 0", 0, "q0=1")

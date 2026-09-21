@@ -12,6 +12,8 @@ MAX_RULE = 255
 VALID_CELLS = frozenset("01")
 MAX_RETRODICTION_WIDTH = 16
 MAX_LISTED_PASTS = 8
+MAX_PREDICTION_STATES = 10_000
+MAX_PREDICTION_CELL_UPDATES = 1_000_000
 
 
 def validate_state(state: str) -> None:
@@ -46,7 +48,7 @@ def next_state(state: str, rule: int) -> str:
 
 
 def predict(state: str, rule: int, steps: int) -> str:
-    """Return the exact state after steps, skipping any discovered cycle."""
+    """Return the exact state, or refuse when bounded cycle search is exhausted."""
     validate_state(state)
     validate_rule(rule)
     if steps < 0:
@@ -55,6 +57,8 @@ def predict(state: str, rule: int, steps: int) -> str:
     history: list[str] = []
     seen_at: dict[str, int] = {}
     current = state
+    # ponytail: bounded history; use a specialized shortcut for larger searches.
+    limit = min(MAX_PREDICTION_STATES, MAX_PREDICTION_CELL_UPDATES // len(state))
 
     for step in range(steps):
         if current in seen_at:
@@ -62,6 +66,12 @@ def predict(state: str, rule: int, steps: int) -> str:
             cycle_length = step - cycle_start
             target = cycle_start + (steps - cycle_start) % cycle_length
             return history[target]
+        if step >= limit:
+            raise ValueError(
+                "simulation budget exhausted before finding the requested state"
+                " or a cycle; reduce the horizon or use a supported linear rule."
+                " This resource limit is not a proof of impossibility."
+            )
         seen_at[current] = step
         history.append(current)
         current = next_state(current, rule)

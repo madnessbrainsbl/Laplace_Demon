@@ -152,7 +152,7 @@ def reversed_program(commands: str) -> str:
 def rewind_probabilities(bits: str, gates: str, qubit: int) -> tuple[float, float]:
     """P(return to |bits>) after forward+reverse: untouched vs read mid-way.
 
-    Reading = full dephasing of one qubit between the forward and the reverse
+    Reading with its outcome ignored = full dephasing between forward and reverse
     run, computed exactly by splitting the state into its two projected
     branches and rewinding each.
     """
@@ -178,20 +178,21 @@ def rewind_probabilities(bits: str, gates: str, qubit: int) -> tuple[float, floa
 
 
 def rewind_report(bits: str, gates: str, qubit: int) -> str:
-    """Unitary evolution remembers; one reading plants the arrow of time."""
+    """Compare inverse-circuit recovery with and without unrecorded measurement."""
     pure_return, read_return = rewind_probabilities(bits, gates, qubit)
     lines = [
         "Rewind: run the program forward, then reversed (H, X, CNOT are"
         " self-inverse, so the reversed list IS the inverse circuit).",
         f"P(return to |{bits}>) with nothing watching:   {pure_return:.6f}",
         f"P(return) after READING qubit {qubit} mid-way:    {read_return:.6f}",
+        "The measurement outcome is ignored; no outcome-conditioned recovery is modeled.",
     ]
     if read_return < pure_return - PROBABILITY_TOLERANCE:
         lines.append(
             "THE UNITARY WORLD REMEMBERS: undisturbed evolution rewinds to the"
-            " exact start — the law itself loses nothing. One reading broke"
-            " the return: in quantum mechanics the arrow of time enters"
-            " through measurement and environment, never through the law."
+            " initial state within floating-point precision. The unrecorded"
+            " measurement reduces recovery by this inverse circuit. This model"
+            " does not establish a universal origin of the arrow of time."
         )
     else:
         lines.append(

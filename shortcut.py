@@ -113,7 +113,8 @@ def shortcut_report(state: str, rule: int, steps: int) -> str:
             f"Computed in {elapsed * 1000:.2f} ms with ~{doublings} squarings"
             f" instead of {steps} lived steps.",
             "REDUCIBLE: this universe has a shortcut — the demon outruns its"
-            " world. Rule 30 has no known shortcut; that contrast is the wall.",
+            " model's step-by-step simulation. This says nothing about whether"
+            " other rules admit other shortcuts.",
         ]
     )
 

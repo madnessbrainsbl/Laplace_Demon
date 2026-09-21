@@ -1,11 +1,7 @@
-"""No global 'now': a demon embedded in the world only ever knows a light cone.
+"""Prediction from a selected spatial mask of the initial cellular state.
 
-Information in the cellular universe travels at most one cell per step. A demon
-sitting at cell p that must predict an event T steps ahead has had time to hear
-from cells within ring-distance T — nothing farther. The event, in turn, depends
-on the initial cells within distance T of ITS location. Where those cones fail
-to overlap, no amount of intelligence closes the gap: the demon's seat in the
-world decides what it can be a demon for.
+For illustration the mask radius equals the prediction horizon. Communication
+and collection times are not simulated; this is not a relativistic observer.
 """
 
 from __future__ import annotations
@@ -48,13 +44,13 @@ def embedded_demon_profile(
 
 
 def light_cone_report(width: int, rule: int, horizon: int, event: str) -> str:
-    """Show that no seat inside the world sees the whole present."""
+    """Compare event knowledge under explicitly supplied initial-state masks."""
     profile = embedded_demon_profile(width, rule, horizon, event)
     cone_size = len(light_cone_cells(width, 0, horizon))
     lines = [
-        f"Toy timing model: signals travel 1 cell/step, and the observation"
-        f" window is assumed to end before the {horizon}-step prediction starts."
-        f" It then contains {cone_size} of {width} cells.",
+        f"Toy spatial mask: assume exact initial data within radius {horizon}"
+        f" ({cone_size} of {width} cells). The radius equals the prediction"
+        " horizon by convention; signal travel and collection are not simulated.",
         "L_O by the demon's seat in the world:",
     ]
     for position, coefficient in enumerate(profile):
@@ -64,20 +60,18 @@ def light_cone_report(width: int, rule: int, horizon: int, event: str) -> str:
     full_seats = sum(1 for c in profile if c >= 1 - ENTROPY_TOLERANCE)
     if cone_size >= width:
         lines.append(
-            "The horizon is long enough for light to cross the whole ring:"
-            " every seat sees everything — the external demon's privilege,"
-            " earned by waiting."
+            "The selected mask covers the whole ring: every seat is supplied"
+            " the complete initial state. This does not establish how it was collected."
         )
     elif full_seats == 0:
         lines.append(
-            "Under this timing assumption, no seat has enough selected-cell"
-            " knowledge for this event. Changing collection or reply times can"
-            " change the result."
+            "Under this spatial mask, no seat has enough selected-cell"
+            " knowledge for this event. Changing the mask can change the result."
         )
     else:
         lines.append(
             f"Only {full_seats} of {width} seats have enough selected-cell"
-            " knowledge for this event under the toy timing model. The other"
+            " knowledge for this event under the toy spatial mask. The other"
             " tabs assume the complete model state as an input."
         )
     return "\n".join(lines)

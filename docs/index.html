@@ -61,18 +61,18 @@
     <a class="btn ghost" href="https://github.com/madnessbrainsbl/Laplace_Demon">★ GitHub</a>
     <a class="btn ghost" href="https://github.com/madnessbrainsbl/Laplace_Demon/blob/main/README.ru.md">Русский</a>
   </div>
-  <p class="note">This page is a taste. The full laboratory — 8 tabs, quantum kernel, Bell test, Landauer costs, retrodiction — is a 10&nbsp;MB exe with zero dependencies.</p>
+  <p class="note">A laboratory of finite models and numerical diagnostics. It does not prove that Laplace's demon is impossible under every law of nature. The Windows release includes the Python runtime and Go kernel.</p>
 </header>
 
 <section class="wrap">
   <h2>The world computes. Watch it.</h2>
-  <div class="sub">One ring of cells, one local law, no randomness anywhere. The demon has no shortcut for rule&nbsp;30 — it must live through every row, and so does this canvas.</div>
+  <div class="sub">One ring of cells, one local law, deterministic evolution. This canvas draws every row. The desktop simulator can skip detected cycles; its GF(2) shortcut applies only to linear rules.</div>
   <div class="card">
     <canvas id="space" height="360"></canvas>
     <div class="controls">
       <button id="replay">Replay</button>
       <select id="rule">
-        <option value="30" selected>Rule 30 — chaos (no shortcut exists)</option>
+        <option value="30" selected>Rule 30 — nonlinear (simulated step by step here)</option>
         <option value="90">Rule 90 — fractal (linear: demon jumps in O(log t))</option>
         <option value="110">Rule 110 — Turing-complete</option>
         <option value="150">Rule 150 — linear XOR</option>
@@ -99,15 +99,15 @@
 
 <section class="wrap">
   <h2>The full laboratory</h2>
-  <div class="sub">Eight tabs in the desktop app — every claim executed, never asserted.</div>
+  <div class="sub">Eight tabs with explicit model assumptions. Finite examples illustrate limits; they do not prove universal physical impossibility.</div>
   <div class="grid">
-    <div class="cell"><b>Classical</b><p>Exact events, retrodiction (Gardens of Eden, the arrow of time), and the GF(2) fast-forward: 10<sup>18</sup> steps in milliseconds where the law is linear — an honest refusal where it is not.</p></div>
+    <div class="cell"><b>Classical</b><p>Exact finite-model events, predecessor enumeration, GF(2) fast-forward for linear rules, and bounded cycle search for other rules.</p></div>
     <div class="cell"><b>From Events</b><p>The law is not given: the demon infers every rule consistent with an observed history and answers only as firmly as the evidence allows.</p></div>
-    <div class="cell"><b>Continuous</b><p>RK4 mechanics with a <i>measured</i> Lyapunov exponent and the prediction horizon T = (1/λ)·ln(tol/err).</p></div>
-    <div class="cell"><b>Quantum (Go)</b><p>Density matrix with decoherence, the wavefunction limit (L=0 at full knowledge), CHSH = 2√2, measurement disturbance, and Rewind — the unitary world remembers.</p></div>
-    <div class="cell"><b>Formula L</b><p>L = I(E;K)/H(E) computed exactly; the minimal demon H<sub>irr</sub>; the light-cone embedded demon; macro entropy — the second law as designed ignorance.</p></div>
+    <div class="cell"><b>Continuous</b><p>RK4 mechanics, impact detection, finite-time growth estimates and step comparisons. The displayed horizon is a heuristic, not a guaranteed error bound.</p></div>
+    <div class="cell"><b>Quantum (Go)</b><p>Density matrices, decoherence, Born probabilities, CHSH and inverse circuits. Measurement reports ignore the outcome; Bell violations constrain local hidden-variable models under Bell-test assumptions.</p></div>
+    <div class="cell"><b>Formula L</b><p>L = I(E;K)/H(E) for a selected ensemble, minimal observed-cell sets, initial-state spatial masks and coarse-grained uncertainty. This does not derive the second law.</p></div>
     <div class="cell"><b>Active Inference</b><p>An agent buys knowledge cell by cell and becomes a demon — or stalls on XOR-like laws, where greedy curiosity provably overpays.</p></div>
-    <div class="cell"><b>The Walls</b><p>Bekenstein capacity, Landauer's kT·ln2 per bit, the Gödel/Wolpert diagonal and the monotheism theorem — enumerated, not cited.</p></div>
+    <div class="cell"><b>The Walls</b><p>Bekenstein's capacity upper bound, Landauer's reset-heat bound for unbiased bits, and finite illustrations of diagonal opposition and limits on mutual inference.</p></div>
     <div class="cell"><b>The Game</b><p>The demo above, plus animations of the hidden world stepping its law — randomness as a knowledge gap, experienced first-hand.</p></div>
   </div>
 </section>
@@ -120,7 +120,7 @@
     <pre>git clone https://github.com/madnessbrainsbl/Laplace_Demon.git
 cd Laplace_Demon
 python gui.py</pre>
-    <p class="note">102 unit tests and the Go kernel run in CI on every push. MIT license. Citable via <code>CITATION.cff</code>.</p>
+    <p class="note">Python regression tests and Go test/vet run in CI on every push. MIT license. Citable via <code>CITATION.cff</code>. <a href="https://github.com/madnessbrainsbl/Laplace_Demon/blob/main/SCIENTIFIC_SCOPE.md">Model assumptions and sources</a>.</p>
   </div>
 </section>
 
