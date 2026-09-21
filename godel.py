@@ -58,11 +58,14 @@ def diagonal_report() -> str:
     )
     lines += [
         "",
-        "No strategy inside the world can be right — the Godel/Wolpert diagonal.",
-        "The same law with the demon OUTSIDE (the world never reads the prediction):",
+        "No published binary prediction can be right for this feedback-defined"
+        " event — a diagonal construction.",
+        "If the world does not read the prediction, the feedback construction"
+        " no longer applies:",
         f'  strategy "{correct_outside[0]}" is right {outside_hits} of 2 —'
-        " a complete demon exists.",
-        "Completeness breaks not with complexity but with membership in the world.",
+        " a predictor exists for this non-feedback toy event.",
+        "This demonstrates a limit for universal, answer-publishing predictors"
+        " facing feedback; it does not rule out every internal prediction.",
     ]
     return "\n".join(lines)
 
@@ -96,10 +99,9 @@ def mutual_inference_report() -> str:
     lines += [
         "",
         f"Joint outputs where both devices are right: {survivors} of 4.",
-        "No two distinguishable devices can strongly infer each other"
-        " (Wolpert, Physical Limits of Inference, arXiv:0708.1362) —"
-        " his 'monotheism theorem': a universe fits at most ONE all-knowing"
-        " inference device.",
+        "Wolpert's result concerns two distinguishable devices that satisfy his"
+        " formal strong-inference relation; this table is a finite illustration,"
+        " not a proof that ordinary prediction between devices is impossible.",
         "The pair fails for the same reason a single device fails on X*:"
         " self-reference, not lack of power.",
     ]

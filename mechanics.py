@@ -114,9 +114,11 @@ def lyapunov_exponent(
     chunk: float = LYAPUNOV_CHUNK,
     step: float = LYAPUNOV_STEP,
 ) -> float:
-    """Measure the largest Lyapunov exponent by Benettin renormalization.
+    """Estimate the largest finite-time exponent across coordinate directions.
 
-    Audit fix: the exponent is computed from the flow, never hand-written.
+    A one-direction perturbation can lie exactly in a stable subspace, so it
+    cannot stand in for the largest exponent.  This remains a finite-time
+    numerical estimate, not a proof of an asymptotic Lyapunov exponent.
     """
     if not math.isfinite(duration) or duration <= 0:
         raise ValueError("duration must be finite and positive")
@@ -126,32 +128,39 @@ def lyapunov_exponent(
     if chunk == 0:
         raise ValueError("chunk must be positive")
 
-    reference = list(initial)
-    shadow = list(initial)
-    shadow[0] += delta
-    total = 0.0
-    elapsed = 0.0
-    for _ in range(math.ceil(duration / chunk)):
-        current_chunk = min(chunk, duration - elapsed)
-        reference = integrate(flow, reference, current_chunk, step)
-        shadow = integrate(flow, shadow, current_chunk, step)
-        distance = math.dist(reference, shadow)
-        if not math.isfinite(distance):
-            raise ValueError("flow diverged to a non-finite state")
-        if distance <= 0.0:
-            distance = delta
-        total += math.log(distance / delta)
-        shadow = [
-            r + (s - r) * (delta / distance) for r, s in zip(reference, shadow)
-        ]
-        elapsed += current_chunk
-    return total / duration
+    if not initial:
+        raise ValueError("initial state must not be empty")
+
+    estimates = []
+    for direction in range(len(initial)):
+        reference = list(initial)
+        shadow = list(initial)
+        shadow[direction] += delta
+        total = 0.0
+        elapsed = 0.0
+        for _ in range(math.ceil(duration / chunk)):
+            current_chunk = min(chunk, duration - elapsed)
+            reference = integrate(flow, reference, current_chunk, step)
+            shadow = integrate(flow, shadow, current_chunk, step)
+            distance = math.dist(reference, shadow)
+            if not math.isfinite(distance):
+                raise ValueError("flow diverged to a non-finite state")
+            if distance <= 0.0:
+                distance = delta
+            total += math.log(distance / delta)
+            shadow = [
+                r + (s - r) * (delta / distance)
+                for r, s in zip(reference, shadow)
+            ]
+            elapsed += current_chunk
+        estimates.append(total / duration)
+    return max(estimates)
 
 
 def prediction_horizon(
     exponent: float, initial_error: float, tolerance: float
 ) -> float:
-    """T_pred = (1/lambda)*ln(tolerance/initial_error); infinite without chaos."""
+    """Return the exponential-growth estimate when the estimated exponent is positive."""
     if not all(math.isfinite(value) for value in (exponent, initial_error, tolerance)):
         raise ValueError("exponent, initial error and tolerance must be finite")
     if initial_error <= 0:
@@ -161,6 +170,13 @@ def prediction_horizon(
     if exponent <= 0:
         return math.inf
     return math.log(tolerance / initial_error) / exponent
+
+
+def numerical_state_error(flow: Flow, state: Sequence[float], duration: float) -> float:
+    """Compare RK4 at h and h/2; this is a convergence indicator, not a bound."""
+    coarse = integrate(flow, state, duration, DEFAULT_STEP)
+    fine = integrate(flow, state, duration, DEFAULT_STEP / 2)
+    return math.dist(coarse, fine)
 
 
 def mechanics_report(
@@ -196,26 +212,34 @@ def mechanics_report(
         state = integrate(pendulum_flow, start, horizon)
         lines.append(f"Outcome: angle theta1({horizon:.2f} s) = {state[0]:.4f} rad")
 
-    lines.append(f"Lyapunov exponent (Benettin): lambda = {exponent:+.4f} 1/s")
+    step_error = numerical_state_error(flow, start, horizon)
+    lines.append(
+        f"Finite-time Lyapunov estimate (coordinate sweep): lambda ="
+        f" {exponent:+.4f} 1/s"
+    )
+    lines.append(
+        f"RK4 step comparison |x_h-x_h/2| = {step_error:.3e}"
+        " (indicator, not a rigorous error bound)"
+    )
     if math.isinf(horizon_limit):
         lines.append(
-            "Horizon T_pred is infinite: lambda <= 0, the initial error never grows"
+            "No exponential horizon from this estimate: lambda <= 0 does not"
+            " prove that input or numerical errors never grow."
         )
     else:
         lines.append(
             f"T_pred = (1/lambda)*ln(tolerance/error) = {horizon_limit:.2f} s"
             f" (error {initial_error:g}, tolerance {tolerance:g})"
         )
-    if horizon <= horizon_limit:
+    if exponent > 0 and horizon <= horizon_limit and step_error <= tolerance:
         lines.append(
-            f"DETERMINED: the {horizon:.2f} s horizon is inside T_pred —"
-            f" the computation is trustworthy"
+            f"MODEL ESTIMATE: the {horizon:.2f} s horizon is inside T_pred and"
+            " the h/h/2 comparison is within the stated tolerance."
         )
     else:
         lines.append(
-            f"BEYOND HORIZON: the outcome is deterministic, but with initial error"
-            f" {initial_error:g} the computation is untrustworthy after"
-            f" {horizon_limit:.2f} s"
+            "NOT CERTIFIED: the displayed trajectory is a numerical model result;"
+            " the Lyapunov estimate and one step comparison do not prove the event."
         )
     return "\n".join(lines)
 

@@ -1,10 +1,10 @@
-"""The second law as designed ignorance: deterministic micro, growing macro doubt.
+"""Coarse-grained uncertainty in a deterministic cellular model.
 
 The observer sees only block sums (a coarse-grained macrostate); the micro
 dynamics underneath is exactly deterministic. Start with the macrostate known
 perfectly, evolve every compatible micro-world, and watch the observer's
-uncertainty about the NEXT macrostates grow — thermodynamic randomness without
-a single random event underneath (Israeli & Goldenfeld's coarse-graining line).
+uncertainty about the NEXT macrostates grow. This is a finite coarse-graining
+example, not a derivation of thermodynamics.
 """
 
 from __future__ import annotations
@@ -80,10 +80,10 @@ def macro_report(width: int, rule: int, steps: int) -> str:
         )
     elif end > start + ENTROPY_TOLERANCE:
         lines.append(
-            "SECOND LAW FOR THE COARSE OBSERVER: not one random event happened"
-            " below — every micro-world moved deterministically — yet the"
-            " observer's uncertainty grew. Thermodynamic randomness is"
-            " ignorance built into the level of description."
+            "COARSE-GRAINED UNCERTAINTY GREW in this chosen ensemble: every"
+            " micro-world moved deterministically, while the macro observer lost"
+            " predictive detail. This finite metric is not by itself a proof of"
+            " the thermodynamic second law."
         )
     else:
         lines.append(

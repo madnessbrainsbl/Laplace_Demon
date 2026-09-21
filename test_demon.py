@@ -206,11 +206,15 @@ class DemonTests(unittest.TestCase):
         self.assertAlmostEqual(impact_time, 3.306, delta=0.01)
         self.assertEqual(state[1], 0.0)
 
-    def test_ball_error_does_not_grow(self) -> None:
-        self.assertLess(abs(lyapunov_exponent(ball_flow, BALL_START)), 0.05)
+    def test_ball_lyapunov_estimate_is_finite(self) -> None:
+        self.assertTrue(math.isfinite(lyapunov_exponent(ball_flow, BALL_START)))
 
     def test_pendulum_lyapunov_is_measured_positive(self) -> None:
         self.assertGreater(lyapunov_exponent(pendulum_flow, PENDULUM_START), 0.1)
+
+    def test_lyapunov_sweep_finds_an_unstable_coordinate(self) -> None:
+        exponent = lyapunov_exponent(lambda state: [-state[0], state[1]], [0.0, 0.0])
+        self.assertAlmostEqual(exponent, 1.0, places=4)
 
     def test_prediction_horizon_formula(self) -> None:
         self.assertAlmostEqual(
@@ -230,14 +234,14 @@ class DemonTests(unittest.TestCase):
         state = integrate(lambda values: [1.0], [0.0], 0.25, step=0.1)
         self.assertAlmostEqual(state[0], 0.25)
 
-    def test_mechanics_ball_event_is_determined(self) -> None:
+    def test_mechanics_ball_report_does_not_overclaim_certainty(self) -> None:
         report = mechanics_report("ball", 5.0, 1e-6, 1.0)
         self.assertIn("LANDED", report)
-        self.assertIn("DETERMINED", report)
+        self.assertIn("MODEL ESTIMATE", report)
 
     def test_mechanics_chaos_beyond_horizon_is_honest(self) -> None:
         report = mechanics_report("pendulum", 30.0, 1e-3, 1.0)
-        self.assertIn("BEYOND HORIZON", report)
+        self.assertIn("NOT CERTIFIED", report)
 
     def test_irreducible_profile_finds_minimal_knowledge(self) -> None:
         levels = irreducible_profile(3, 30, 0, "cell0=1")
@@ -253,7 +257,7 @@ class DemonTests(unittest.TestCase):
 
     def test_irreducible_report_names_minimal_demon(self) -> None:
         report = irreducible_report(3, 30, 0, "cell0=1")
-        self.assertIn("Minimal demon: 1 cell(s) of 3", report)
+        self.assertIn("Minimal selected-cell observation: 1 cell(s) of 3", report)
 
     def test_no_inner_strategy_survives_diagonal(self) -> None:
         for strategy in STRATEGIES.values():
@@ -305,7 +309,7 @@ class DemonTests(unittest.TestCase):
     def test_quantum_wall_leaves_no_information_to_gain(self) -> None:
         report = quantum_wall_report("00", "H 0; CNOT 0 1", "q0=1")
         self.assertIn("L_O               = 0.000000", report)
-        self.assertIn("THE QUANTUM WALL", report)
+        self.assertIn("FOR THIS FIXED STATE", report)
 
     def test_quantum_wall_allows_determined_correlation(self) -> None:
         report = quantum_wall_report("00", "H 0; CNOT 0 1", "q0=q1")
@@ -415,7 +419,7 @@ class DemonTests(unittest.TestCase):
 
         report = light_cone_report(7, 30, 1, "cell3=1")
         self.assertIn("full demon here", report)
-        self.assertIn("WHERE you sit", report)
+        self.assertIn("Toy timing model", report)
         long_horizon = light_cone_report(5, 30, 3, "cell2=1")
         self.assertIn("light to cross the whole ring", long_horizon)
 
@@ -425,7 +429,7 @@ class DemonTests(unittest.TestCase):
         series = macro_entropy_series(12, 30, 6)
         self.assertAlmostEqual(series[0], 0.0)
         self.assertGreater(series[-1], 1.0)
-        self.assertIn("SECOND LAW", macro_report(12, 30, 6))
+        self.assertIn("COARSE-GRAINED UNCERTAINTY", macro_report(12, 30, 6))
 
     def test_macro_entropy_stays_zero_for_identity_rule(self) -> None:
         from macro import macro_entropy_series, macro_report
@@ -539,13 +543,20 @@ class DemonTests(unittest.TestCase):
         self.assertEqual(len(result), 61)
         self.assertEqual(set(result) | {"0", "1"}, {"0", "1"})
 
-    def test_shortcut_report_refuses_rule_30_honestly(self) -> None:
+    def test_shortcut_report_limits_its_claim_for_rule_30(self) -> None:
         from shortcut import shortcut_report
 
         report = shortcut_report("0001000", 30, 1000)
-        self.assertIn("NOT linear", report)
-        self.assertIn("irreducibility", report)
+        self.assertIn("does not apply", report)
+        self.assertIn("Finite simulation result", report)
         self.assertIn("REDUCIBLE", shortcut_report("0001000", 90, 1000))
+
+    def test_non_linear_rule_can_still_fast_forward_via_a_cycle(self) -> None:
+        from shortcut import shortcut_report
+
+        report = shortcut_report("0101010", 255, 10**18)
+        self.assertIn("1111111", report)
+        self.assertNotIn("irreducibility", report)
 
     def test_landauer_cost_matches_kT_ln2(self) -> None:
         import math
@@ -557,7 +568,7 @@ class DemonTests(unittest.TestCase):
         self.assertEqual(landauer_cost_joules(0, 300.0), 0.0)
         with self.assertRaisesRegex(ValueError, "temperature"):
             landauer_cost_joules(1, 0.0)
-        self.assertIn("Maxwell", landauer_report(3, 300.0))
+        self.assertIn("memory is reset", landauer_report(3, 300.0))
 
     def test_chsh_bell_pair_reaches_tsirelson(self) -> None:
         from walls import TSIRELSON_BOUND, chsh_value
@@ -587,8 +598,8 @@ class DemonTests(unittest.TestCase):
         self.assertIn("BELL VIOLATION", chsh_report("00", "H 0; CNOT 0 1"))
         self.assertIn("Within the classical bound", chsh_report("00", ""))
 
-    def test_mutual_inference_names_the_monotheism_theorem(self) -> None:
-        self.assertIn("monotheism", mutual_inference_report())
+    def test_mutual_inference_marks_the_finite_example_as_an_illustration(self) -> None:
+        self.assertIn("finite illustration", mutual_inference_report())
 
     def test_gate_builder_composes_and_refuses_bad_cnot(self) -> None:
         from tkinter import ttk

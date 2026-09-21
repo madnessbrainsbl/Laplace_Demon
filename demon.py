@@ -100,8 +100,8 @@ def retrodiction_report(state: str, rule: int) -> str:
     elif len(pasts) == 1:
         lines.append(f"Unique past: {pasts[0]}")
         lines.append(
-            "DETERMINED both ways: here the demon retrodicts as exactly as it"
-            " predicts — Laplace's full promise holds for this state."
+            "The immediately preceding state is determined. This alone does not"
+            " guarantee a unique earlier history: check each additional step."
         )
     else:
         shown = ", ".join(pasts[:MAX_LISTED_PASTS])

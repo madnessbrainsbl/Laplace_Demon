@@ -20,38 +20,38 @@
 
 </div>
 
-**Randomness is not a property of the world — it is a gap in the observer's
-knowledge.** This project turns that thesis into executable code: an honest
-Laplace's demon with a GUI — exact where knowledge is complete, candid where
-science builds walls. Zero dependencies: Python stdlib + a prebuilt Go kernel.
+**Randomness depends on the model and on an observer's knowledge.** This is an
+interactive laboratory: it exactly evaluates stated finite deterministic models
+and illustrates limits of particular prediction methods. It does not prove that
+Laplace's demon is impossible under every possible law of nature. Zero
+dependencies: Python stdlib + a prebuilt Go kernel.
 
 ## What's new
 
-The latest wave of changes closed Laplace's original definition end to end:
+The latest wave expands the laboratory and sharpens the scope of each model:
 
 - **Retrodict the past** (Classical) — exact predecessor enumeration: Gardens
-  of Eden, unique pasts, and the arrow of time as destroyed history bits.
-- **Linear shortcut** (Classical) — GF(2) fast-forward: 10^18 steps in
-  milliseconds for the eight linear rules, an honest refusal for Rule 30 —
-  computational reducibility vs irreducibility side by side.
+  of Eden and immediate predecessor counts in a finite cellular model.
+- **Linear shortcut** (Classical) — GF(2) fast-forward for the eight linear
+  rules, plus cycle skipping for finite simulations when a repeat is found.
 - **CHSH before environment** (Quantum) — a numerical Bell test: entangled
-  pairs reach the Tsirelson bound 2*sqrt(2), local determinism stops at 2.
+  pairs reach the Tsirelson bound 2*sqrt(2), beyond the local-hidden-variable
+  bound under the Bell-test assumptions.
 - **Read a qubit** (Quantum) — measurement as disturbance: extracting one bit
   halves the purity of a Bell pair; reading a classical bit is free.
 - **Rewind** (Quantum) — the unitary world remembers: forward + reversed
   program returns the state exactly, unless a reading broke the return.
-- **Landauer cost of knowledge** (The Walls) — the demon's memory priced in
-  joules: kT*ln2 per erased bit.
-- **Embedded demon / light cone** (Formula L) — no global "now": a demon
-  living inside the world only ever knows its cone; omniscience is a property
-  of where you sit.
-- **Macro entropy** (Formula L) — the second law for a coarse observer:
-  deterministic micro-dynamics, growing macro-uncertainty.
+- **Landauer cost** (The Walls) — a reset memory costs at least kT*ln2 per bit.
+- **Embedded observer / light cone** (Formula L) — a stated toy timing model
+  limits which cells are available before a prediction begins.
+- **Macro entropy** (Formula L) — uncertainty in a chosen coarse-grained
+  ensemble; it is not by itself a derivation of the second law.
 - **The Game** (new tab) — outrun the demon: call Rule 30's next bit; the
   demon computes (100%), a bounded observer hovers at the coin line (~50%).
 - Structured input everywhere: event pickers, a gate-program builder, bounded
   spinboxes and keystroke filters — an invalid input can no longer be typed.
-- 102 unit tests, Go test/vet, and a 52-check GUI verification drive.
+- 104 unit tests and Go test/vet. The graphical interface still needs a live
+  visual pass after material UI changes.
 
 ## Graphical interface
 
@@ -122,9 +122,11 @@ reports this honestly with `EPISTEMIC PLATEAU` and `Greedy is NOT optimal`.
 ## The quantum wall
 
 The **Wavefunction limit (before environment)** button on the Quantum tab
-([walls.py](walls.py)) calculates `L_O` for a quantum event when K is the
-*complete wavefunction* available to this operational model. Environmental
-parameters are intentionally not applied to this separate report:
+([walls.py](walls.py)) calculates `L_O` for a quantum event when K is a fixed,
+complete wavefunction in this operational model. Environmental parameters are
+intentionally not applied to this separate report. A fixed K has no variation
+across the selected ensemble; that is not a claim that preparation knowledge can
+never reduce uncertainty in a mixed ensemble:
 
 ```text
 H(E) = 1.000000 bits
@@ -202,8 +204,9 @@ Four demonstrations complete the local interpretation of Laplace's idea:
 - **Linear shortcut** (Classical) — reducibility versus irreducibility. Eight of
   the 256 elementary rules are linear over GF(2). For those rules, polynomial
   exponentiation jumps across `10^18` steps in milliseconds with `O(log t)`
-  work. No shortcut is known for Rule 30, and the program refuses honestly.
-  This contrast illustrates the computational-irreducibility wall.
+  work. For non-linear rules this particular method does not apply; finite
+  simulation can still detect and skip a cycle. This is an algorithmic boundary
+  of the laboratory, not a proof of computational irreducibility.
 
   ```powershell
   python shortcut.py --rule 90 --steps 1000000000000000000
@@ -214,30 +217,25 @@ Four demonstrations complete the local interpretation of Laplace's idea:
   Bell state reaches the Tsirelson bound `2*sqrt(2) = 2.828427`; local
   deterministic correlations satisfy `S <= 2`. Dephasing and damping are not
   applied in this report, which is stated explicitly in its output.
-- **Landauer cost of knowledge** (The Walls) — erasing one bit costs at least
-  `kT*ln2` joules. The minimal knowledge from `H_irr` is multiplied by the
-  carrier temperature, turning “information is physical” into a numerical
-  lower bound.
+- **Landauer cost** (The Walls) — erasing one bit costs at least `kT*ln2`
+  joules. The selected-cell observation count is an input to the illustration,
+  not a universal lower bound on predictor memory.
 
-## The demon inside the world, measurement, and the second law
+## Feedback, measurement, and coarse-graining
 
 Three demonstrations that turn the remaining prohibitions into running code:
 
-- **Embedded demon (light cone)** (Formula L, [cone.py](cone.py)) — there is no
-  global "now": signals travel one cell per step, so a demon living at cell p
-  and predicting T steps ahead has heard from at most a radius-T cone. The
-  report shows `L_O` for every seat in the world — omniscience turns out to be
-  a property of WHERE you sit, not how clever you are. The external demon of
-  the other tabs receives the whole present as a gift no inhabitant gets.
+- **Embedded observer (light cone)** (Formula L, [cone.py](cone.py)) — a toy
+  timing model: signals travel one cell per step and the observation window
+  ends before prediction starts. Changing collection or reply times changes
+  the available knowledge.
 - **Read a qubit** (Quantum) — measurement disturbs: reading a qubit equals
   full dephasing. The purity of a Bell pair drops from 1.0 to 0.5 through the
   act of extracting one bit; knowledge not only costs joules — it leaves
   fingerprints. Reading a classical bit is free, and the report says so.
-- **Macro entropy (second law)** (Formula L, [macro.py](macro.py)) —
-  thermodynamics as designed ignorance: the observer sees only block sums, the
-  micro-world is strictly deterministic, yet H(macro) grows from 0 to ~5 bits
-  without a single random event. Rule 204 (identity) creates no macro
-  ignorance — not every law makes a thermodynamic world.
+- **Macro entropy** (Formula L, [macro.py](macro.py)) — the observer sees only
+  block sums and can lose predictive detail under deterministic micro-dynamics.
+  This finite ensemble metric is not a proof of thermodynamics.
 
 ```powershell
 python cone.py --width 7 --rule 30 --horizon 1 --event cell3=1

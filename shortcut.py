@@ -1,10 +1,9 @@
-"""Computational reducibility: the shortcut linear rules allow and rule 30 lacks.
+"""Fast-forward finite cellular automata where a verified shortcut is available.
 
 Eight of the 256 elementary rules are additive over GF(2) (the new cell is an
-XOR of neighbours). For them the demon has a genuine shortcut: t steps equal
-multiplying by the t-th power of the step polynomial in GF(2)[x]/(x^w + 1),
-computed in O(log t) squarings instead of t lived steps. For rule 30 no such
-shortcut is known — that contrast IS Wolfram's computational irreducibility.
+XOR of neighbours). For them t steps equal multiplying by the t-th power of the
+step polynomial in GF(2)[x]/(x^w + 1), computed in O(log t) squarings. Other
+rules may still have shortcuts; this module simply does not implement one.
 """
 
 from __future__ import annotations
@@ -53,9 +52,8 @@ def fast_forward(state: str, rule: int, steps: int) -> str:
     coefficients = linear_coefficients(rule)
     if coefficients is None:
         raise ValueError(
-            f"rule {rule} is not linear over GF(2) — no shortcut is known;"
-            " the demon must live through every step (computational"
-            " irreducibility)"
+            f"rule {rule} is not linear over GF(2) — this algebraic shortcut"
+            " does not apply"
         )
     width = len(state)
     left, center, right = coefficients
@@ -84,13 +82,17 @@ def shortcut_report(state: str, rule: int, steps: int) -> str:
     """Show the shortcut working — or honestly refuse where none is known."""
     coefficients = linear_coefficients(rule)
     if coefficients is None:
+        start = time.perf_counter()
+        final_state = predict(state, rule, steps)
+        elapsed = time.perf_counter() - start
         return "\n".join(
             [
-                f"Rule {rule} is NOT linear: no shortcut is known.",
-                "The demon must live through all"
-                f" {steps} step(s) — Wolfram's computational irreducibility.",
-                "Try a linear rule (60, 90, 102, 150, 170, 204, 240): there the"
-                " same demon jumps in O(log t).",
+                f"Rule {rule} is NOT linear over GF(2): this shortcut does not apply.",
+                f"Finite simulation result: {final_state}",
+                f"Computed in {elapsed * 1000:.2f} ms; the simulator may skip a"
+                " repeated state, but this does not establish a general shortcut.",
+                "Try a linear rule (60, 90, 102, 150, 170, 204, 240) for the"
+                " verified O(log t) algebraic method.",
             ]
         )
     start = time.perf_counter()
