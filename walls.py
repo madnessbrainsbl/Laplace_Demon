@@ -51,7 +51,7 @@ def bekenstein_bits(radius: float, energy: float) -> float:
 
 
 def minimal_radius(bits: float, energy: float) -> float:
-    """Smallest region that can hold the given bits at the given energy."""
+    """Radius lower bound from Bekenstein; not an attainable storage design."""
     if not math.isfinite(bits) or not math.isfinite(energy):
         raise ValueError("bits and energy must be finite")
     if bits < 0 or energy <= 0:
@@ -68,24 +68,24 @@ def bekenstein_report(radius: float, energy: float, required_bits: int) -> str:
     lines = [
         "Bekenstein bound: I <= 2*pi*R*E / (hbar*c*ln2)",
         f"Carrier: R={radius:g} m, E={energy:g} J",
-        f"Capacity:      {capacity:.3e} bits",
-        f"Demon needs:   {required_bits} bits of knowledge K",
-        f"Minimal radius for those bits at this energy: {needed_radius:.3e} m",
+        f"Capacity upper bound: {capacity:.3e} bits",
+        f"Selected record size: {required_bits} bits",
+        f"Radius lower bound for that record: {needed_radius:.3e} m",
     ]
     if capacity >= required_bits:
         lines.append(
-            "The wall does NOT bite here: the carrier holds the knowledge with"
-            " room to spare."
+            "The wall does NOT bite here: the bound does not exclude this record."
+            " An upper bound does not prove that the capacity is attainable."
         )
     else:
         lines.append(
-            "The wall BITES: this carrier physically cannot hold the knowledge"
-            " the event requires."
+            "The wall BITES: the record exceeds this capacity bound, assuming"
+            " the carrier satisfies the bound's physical assumptions."
         )
     lines.append(
-        "Honest note: for finite toy worlds the bound is astronomically loose."
-        " It constrains a demon only when the system approaches cosmic scale —"
-        " it does not by itself prove a predictor must exceed its world."
+        "Assumptions: a complete, weakly self-gravitating system with total"
+        " energy E inside radius R. This record is not a universal minimum"
+        " predictor memory; the bound does not prove a predictor must exceed its world."
     )
     return "\n".join(lines)
 
@@ -106,10 +106,13 @@ def landauer_report(required_bits: int, temperature: float) -> str:
     cost = landauer_cost_joules(required_bits, temperature)
     per_bit = landauer_cost_joules(1, temperature)
     lines = [
-        "Landauer bound: erasing one bit costs at least kT*ln2 of heat.",
+        "Landauer bound: resetting an unbiased classical bit in an isothermal"
+        " cycle releases at least kT*ln2 of average heat to the bath.",
         f"Temperature: {temperature:g} K -> {per_bit:.3e} J per bit",
         f"Selected observation record for this event: {required_bits} bit(s)",
-        f"Heat to reset that memory for the next observation: {cost:.3e} J",
+        f"Reset-heat lower bound for independent unbiased bits: {cost:.3e} J",
+        "Biased or correlated records require their entropy and accessible side"
+        " information to be considered; raw record length need not equal entropy.",
         "The cost applies when a memory is reset. It is not a charge for merely"
         " knowing a fact, and it does not establish the minimum memory needed"
         " for every possible predictor.",

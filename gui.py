@@ -160,11 +160,7 @@ def log_error(message: str) -> None:
 
 
 def read_qubit_report(bits: str, gates: str, qubit: int, event: str) -> str:
-    """Measurement as disturbance: reading a qubit is full Z dephasing.
-
-    Runs the Go kernel twice — untouched and fully dephased on the read qubit —
-    and compares purity: extracting one bit physically alters the world.
-    """
+    """Compare no measurement with Z measurement whose outcome is ignored."""
     before = run_native_quantum(bits, gates, qubit, 0.0, 0.0, event)
     after = run_native_quantum(bits, gates, qubit, 1.0, 0.0, event)
 
@@ -176,7 +172,9 @@ def read_qubit_report(bits: str, gates: str, qubit: int, event: str) -> str:
 
     purity_before, purity_after = purity_of(before), purity_of(after)
     lines = [
-        f"READING qubit {qubit} = full dephasing in the measurement basis.",
+        f"READING qubit {qubit} with the outcome ignored = full Z dephasing.",
+        "A retained outcome instead gives a conditional state; no outcome"
+        " register or memory-reset energy is simulated here.",
         f"Purity Tr(rho^2): {purity_before:.6f} -> {purity_after:.6f}",
         "",
         "State after the reading:",
@@ -185,15 +183,13 @@ def read_qubit_report(bits: str, gates: str, qubit: int, event: str) -> str:
     ]
     if purity_after < purity_before - 1e-9:
         lines.append(
-            "MEASUREMENT DISTURBS: extracting one bit destroyed coherence the"
-            " demon might have needed later — X-basis facts and any Bell"
-            " violation through this qubit are gone. Knowledge is not only"
-            " paid for in joules (Landauer); taking it leaves fingerprints."
+            "MEASUREMENT DISTURBS: averaging over the unrecorded outcome removes"
+            " Z-basis coherence from the joint density matrix."
         )
     else:
         lines.append(
-            "Nothing to disturb: this qubit held no coherence, so reading it"
-            " was free. The wall only bites where superposition lives."
+            "Nothing to disturb in this state: the Z measurement leaves the"
+            " density matrix unchanged. This does not imply zero physical cost."
         )
     return "\n".join(lines)
 
@@ -986,7 +982,7 @@ class DemonGUI:
             state="readonly",
         ).grid(row=2, column=1, sticky="ew", padx=(14, 10), pady=6)
         ttk.Label(
-            tab, text="chaos decides the horizon", style="Hint.TLabel"
+            tab, text="heuristic horizon", style="Hint.TLabel"
         ).grid(row=2, column=2, sticky="w", pady=6)
         self.mechanics_horizon = tk.StringVar(value="5.0")
         self.mechanics_error = tk.StringVar(value="1e-6")
@@ -1542,9 +1538,8 @@ class DemonGUI:
             accuracy = self.game_right / self.game_total
             if abs(accuracy - 0.5) < 0.12:
                 verdict += (
-                    "  Hovering at the coin line: the column defeats you"
-                    " exactly as it defeats every bounded predictor — yet"
-                    " every bit of it was determined before you guessed."
+                    "  Near the coin benchmark in these rounds. This score"
+                    " does not establish a limit on other prediction strategies."
                 )
         self._game_refresh(verdict)
         self._animator.play(

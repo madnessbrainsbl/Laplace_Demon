@@ -1,4 +1,4 @@
-"""Continuous-time local demon: RK4 flow, exact events, Lyapunov horizon."""
+"""Continuous-time models with numerical event and sensitivity diagnostics."""
 
 from __future__ import annotations
 
@@ -146,7 +146,7 @@ def lyapunov_exponent(
             if not math.isfinite(distance):
                 raise ValueError("flow diverged to a non-finite state")
             if distance <= 0.0:
-                distance = delta
+                raise ValueError("perturbation is unresolved at floating-point precision")
             total += math.log(distance / delta)
             shadow = [
                 r + (s - r) * (delta / distance)
@@ -172,13 +172,6 @@ def prediction_horizon(
     return math.log(tolerance / initial_error) / exponent
 
 
-def numerical_state_error(flow: Flow, state: Sequence[float], duration: float) -> float:
-    """Compare RK4 at h and h/2; this is a convergence indicator, not a bound."""
-    coarse = integrate(flow, state, duration, DEFAULT_STEP)
-    fine = integrate(flow, state, duration, DEFAULT_STEP / 2)
-    return math.dist(coarse, fine)
-
-
 def mechanics_report(
     system: str, horizon: float, initial_error: float, tolerance: float
 ) -> str:
@@ -200,6 +193,13 @@ def mechanics_report(
     lines = [f"System: {title}"]
     if system == "ball":
         state, impact_time = simulate_ball(start, horizon)
+        fine, fine_impact_time = simulate_ball(start, horizon, DEFAULT_STEP / 2)
+        step_error = math.dist(state[:2], fine[:2])
+        output_units = "m (position at impact, or at the requested time if airborne)"
+        if (impact_time is None) != (fine_impact_time is None):
+            lines.append("EVENT DISAGREEMENT: h and h/2 disagree on whether impact occurred.")
+        elif impact_time is not None:
+            lines.append(f"Impact-time h/h/2 difference: {abs(impact_time - fine_impact_time):.3e} s")
         if impact_time is not None:
             lines.append(
                 f"Event: the ball LANDED at t={impact_time:.3f} s, x={state[0]:.2f} m"
@@ -210,15 +210,17 @@ def mechanics_report(
             )
     else:
         state = integrate(pendulum_flow, start, horizon)
+        fine = integrate(pendulum_flow, start, horizon, DEFAULT_STEP / 2)
+        step_error = abs(state[0] - fine[0])
+        output_units = "rad (unwrapped theta1)"
         lines.append(f"Outcome: angle theta1({horizon:.2f} s) = {state[0]:.4f} rad")
 
-    step_error = numerical_state_error(flow, start, horizon)
     lines.append(
         f"Finite-time Lyapunov estimate (coordinate sweep): lambda ="
         f" {exponent:+.4f} 1/s"
     )
     lines.append(
-        f"RK4 step comparison |x_h-x_h/2| = {step_error:.3e}"
+        f"RK4 output comparison = {step_error:.3e} {output_units}"
         " (indicator, not a rigorous error bound)"
     )
     if math.isinf(horizon_limit):
@@ -228,19 +230,17 @@ def mechanics_report(
         )
     else:
         lines.append(
-            f"T_pred = (1/lambda)*ln(tolerance/error) = {horizon_limit:.2f} s"
+            f"Heuristic T_pred = (1/lambda)*ln(tolerance/error) = {horizon_limit:.2f} s"
             f" (error {initial_error:g}, tolerance {tolerance:g})"
         )
-    if exponent > 0 and horizon <= horizon_limit and step_error <= tolerance:
-        lines.append(
-            f"MODEL ESTIMATE: the {horizon:.2f} s horizon is inside T_pred and"
-            " the h/h/2 comparison is within the stated tolerance."
-        )
-    else:
-        lines.append(
-            "NOT CERTIFIED: the displayed trajectory is a numerical model result;"
-            " the Lyapunov estimate and one step comparison do not prove the event."
-        )
+    lines.append(
+        "NOT CERTIFIED: input uncertainty has not been propagated to this event."
+        " The coordinate sweep uses raw model coordinates (m, m/s for the ball;"
+        " rad, rad/s for the pendulum), not a dimensionally uniform error norm."
+        " T_pred assumes exponential growth; transient growth, impact sensitivity"
+        " and numerical error can invalidate it. Neither diagnostic bounds the"
+        " prediction error, even inside T_pred."
+    )
     return "\n".join(lines)
 
 
